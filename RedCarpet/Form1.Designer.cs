@@ -37,6 +37,7 @@
             this.stageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.titleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.titleDemo00StageMapToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.testSaveLevelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.label1 = new System.Windows.Forms.Label();
             this.cpath = new System.Windows.Forms.TextBox();
             this.objectsList = new System.Windows.Forms.ListBox();
@@ -44,7 +45,8 @@
             this.propertyGrid1 = new System.Windows.Forms.PropertyGrid();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.btn_openBymlView = new System.Windows.Forms.Button();
-            this.testSaveLevelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.createToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.actorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -57,6 +59,7 @@
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
             this.stageToolStripMenuItem,
+            this.createToolStripMenuItem,
             this.testSaveLevelToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
@@ -123,6 +126,13 @@
             this.titleDemo00StageMapToolStripMenuItem.Size = new System.Drawing.Size(209, 22);
             this.titleDemo00StageMapToolStripMenuItem.Text = "EnterCatMarioStageMap1";
             this.titleDemo00StageMapToolStripMenuItem.Click += new System.EventHandler(this.titleDemo00StageDesign1ToolStripMenuItem_Click);
+            // 
+            // testSaveLevelToolStripMenuItem
+            // 
+            this.testSaveLevelToolStripMenuItem.Name = "testSaveLevelToolStripMenuItem";
+            this.testSaveLevelToolStripMenuItem.Size = new System.Drawing.Size(93, 20);
+            this.testSaveLevelToolStripMenuItem.Text = "Test save level";
+            this.testSaveLevelToolStripMenuItem.Click += new System.EventHandler(this.testSaveLevelToolStripMenuItem_Click);
             // 
             // label1
             // 
@@ -219,12 +229,20 @@
             this.btn_openBymlView.UseVisualStyleBackColor = true;
             this.btn_openBymlView.Click += new System.EventHandler(this.btn_openBymlView_Click);
             // 
-            // testSaveLevelToolStripMenuItem
+            // createToolStripMenuItem
             // 
-            this.testSaveLevelToolStripMenuItem.Name = "testSaveLevelToolStripMenuItem";
-            this.testSaveLevelToolStripMenuItem.Size = new System.Drawing.Size(93, 20);
-            this.testSaveLevelToolStripMenuItem.Text = "Test save level";
-            this.testSaveLevelToolStripMenuItem.Click += new System.EventHandler(this.testSaveLevelToolStripMenuItem_Click);
+            this.createToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.actorToolStripMenuItem});
+            this.createToolStripMenuItem.Name = "createToolStripMenuItem";
+            this.createToolStripMenuItem.Size = new System.Drawing.Size(53, 20);
+            this.createToolStripMenuItem.Text = "Create";
+            // 
+            // actorToolStripMenuItem
+            // 
+            this.actorToolStripMenuItem.Name = "actorToolStripMenuItem";
+            this.actorToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.actorToolStripMenuItem.Text = "Actor";
+            this.actorToolStripMenuItem.Click += new System.EventHandler(this.actorToolStripMenuItem_Click);
             // 
             // Form1
             // 
@@ -268,6 +286,8 @@
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.Button btn_openBymlView;
         private System.Windows.Forms.ToolStripMenuItem testSaveLevelToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem createToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem actorToolStripMenuItem;
     }
 }
 
