@@ -14,16 +14,16 @@ namespace RedCarpet
     {
         public List<MapObject> mobjs = new List<MapObject>();
 
-        public class MapObject 
-        {            
+        public class MapObject
+        {
 
             public dynamic this[string v]
             {
-                get { return _bymlNode[v];}
+                get { return _bymlNode[v]; }
                 set { _bymlNode[v] = value; }
             }
 
-            [TypeConverter (typeof(DictionaryConverter))]
+            [TypeConverter(typeof(DictionaryConverter))]
             public Dictionary<string, dynamic> AllProperties
             {
                 get { return _bymlNode; }
@@ -115,34 +115,7 @@ namespace RedCarpet
                 if (!(_obj is Dictionary<string, dynamic>)) throw new Exception("Game object node not supported");
                 _bymlNode = _obj;
             }
-
-            public Vector3 calcBBMin()
-            {
-                Vector3 minTemp = new Vector3();
-                List<Vector3> verts = vertices;
-                for (int i = 0; i < verts.Count; i++)
-                {
-                    if (verts[i].X < minTemp.X) minTemp.X = verts[i].X;
-                    if (verts[i].Y < minTemp.Y) minTemp.Y = verts[i].Y;
-                    if (verts[i].Z < minTemp.Z) minTemp.Z = verts[i].Z;
-                }
-                bbMin = minTemp;
-                return minTemp;
-            }
-
-            public Vector3 calcBBMax()
-            {
-                Vector3 maxTemp = new Vector3();
-                List<Vector3> verts = vertices;
-                for (int i = 0; i < verts.Count; i++)
-                {
-                    if (verts[i].X > maxTemp.X) maxTemp.X = verts[i].X;
-                    if (verts[i].Y > maxTemp.Y) maxTemp.Y = verts[i].Y;
-                    if (verts[i].Z > maxTemp.Z) maxTemp.Z = verts[i].Z;
-                }
-                bbMax = maxTemp;
-                return maxTemp;
-            }
+            
         }
     }
 }

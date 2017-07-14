@@ -42,6 +42,7 @@ namespace RedCarpet
         private static Vector4 blackColor = new Vector4(0.0f, 0.0f, 0.0f, 0.0f);
         private static Vector4 whiteColor = new Vector4(1.0f, 1.0f, 1.0f, 1.0f);
         private static Vector4 orangeColor = new Vector4(1.0f, 0.5f, 0.2f, 1.0f);
+        private static Vector4 blueColor = new Vector4(75.0f / 255.0f, 184.0f / 255.0f, 251.0f / 255.0f, 1.0f);
 
         private Dictionary<string, byte[]> LoadedSarc = null;
         string loadedSarcFileName = "";
@@ -49,7 +50,8 @@ namespace RedCarpet
         dynamic LoadedByml = null;
 
         //static string BASEPATH = @"C:\Users\ronal\Desktop\3DWorldKit\SM3DW\content\"; //no need to put the editor in the game's folder, \ at the end matters !!!
-        static string BASEPATH = @"C:\HAX\WIIU\SUPER MARIO 3D WORLD (EUR)\content\";
+        //static string BASEPATH = @"C:\HAX\WIIU\SUPER MARIO 3D WORLD (EUR)\content\";
+        static string BASEPATH = @"C:\Users\Jul\Documents\WiiU\NewNUSGrabber\0005000010145C00\content\";
 
         public Form1()
         {
@@ -126,18 +128,26 @@ namespace RedCarpet
                 objectsList.Items.Add(Tmp_mpobj.unitConfigName);
 
                 // Load the model
+                SmModel model;
                 if (Tmp_mpobj.modelName != null && !Tmp_mpobj.Equals(""))
                 {
-                    LoadModel(Tmp_mpobj.modelName);
+                    model = LoadModel(Tmp_mpobj.modelName);
                 }
                 else
                 {
-                    LoadModel(Tmp_mpobj.unitConfigName);
+                    model = LoadModel(Tmp_mpobj.unitConfigName);
+                }
+
+                // Set the object's BBox
+                if (model != null)
+                {
+                    Tmp_mpobj.bbMin = model.bboxMin;
+                    Tmp_mpobj.bbMax = model.bboxMax;
                 }
             }
         }
 
-        private void LoadModel(string modelName)
+        private SmModel LoadModel(string modelName)
         {
             // todo: don't hardcode
             string modelPath = BASEPATH + @"ObjectData\";
@@ -150,19 +160,20 @@ namespace RedCarpet
             modelDict.TryGetValue(modelName, out model);
             if (model != null)
             {
-                return;
+                return model;
             }
 
             if (LoadModelWithBase(modelPath, modelName))
             {
-                return;
+                return modelDict[modelName];
             }
             else if (LoadModelWithBase(stagePath, modelName))
             {
-                return;
+                return modelDict[modelName];
             }
 
             Console.WriteLine("WARN: Could not load a model for " + modelName);
+            return null;
         }
         
         private bool LoadModelWithBase(string basePath, string modelName)
@@ -317,10 +328,6 @@ namespace RedCarpet
             GL.PolygonOffset(-1, -1);
 
             model.Render();
-            mapObject.vertices = model.objVerts;
-
-            mapObject.calcBBMin();
-            mapObject.calcBBMax();
 
             GL.Disable(EnableCap.PolygonOffsetLine);
         }

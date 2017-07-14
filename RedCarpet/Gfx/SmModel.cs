@@ -12,7 +12,8 @@ namespace RedCarpet.Gfx
     public class SmModel : IDisposable
     {
         private readonly List<SmMesh> meshes = new List<SmMesh>();
-        public List<Vector3> objVerts = new List<Vector3>();
+        public Vector3 bboxMin;
+        public Vector3 bboxMax;
 
         public SmModel(Model model, ByteOrder byteOrder)
         {
@@ -36,6 +37,12 @@ namespace RedCarpet.Gfx
                         // Get the buffer with positions
                         Syroot.NintenTools.Bfres.Buffer positionBuffer = vertexBuffer.Buffers[attrib.BufferIndex];
 
+                        // Create a List to store all the floats
+                        List<float> rawVertices = new List<float>();
+
+                        // Create a List to store Vector3s for BBox calculations later
+                        List<Vector3> positionVectors = new List<Vector3>();
+
                         // Open a reader to make things easier
                         using (MemoryStream stream = new MemoryStream(positionBuffer.Data[0]))
                         using (BinaryDataReader reader = new BinaryDataReader(stream))
@@ -47,29 +54,19 @@ namespace RedCarpet.Gfx
                             {
                                 case GX2AttribFormat.Format_32_32_32_32_Single:
                                 case GX2AttribFormat.Format_32_32_32_Single:
-                                    // Read in the whole buffer as floats
-                                    List<float> verticesList = new List<float>();
 
                                     for (long pos = 0; pos < positionBuffer.Data[0].Length; pos += positionBuffer.Stride)
                                     {
+                                        // Seek to the position in the buffer
                                         reader.Seek(pos, SeekOrigin.Begin);
-                                        verticesList.Add(reader.ReadSingle());
-                                        verticesList.Add(reader.ReadSingle());
-                                        verticesList.Add(reader.ReadSingle());
-                                        if (attrib.Format == GX2AttribFormat.Format_32_32_32_32_Single)
-                                        {
-                                            float temp = reader.ReadSingle();
-                                            verticesList.Add(temp);
-                                         }
-                                    }
 
-                                    // Convert the list into an array
-                                    verticesArray = verticesList.ToArray();
-                                    for (int i = 0; i < verticesArray.Length; i++)
-                                    {
-                                        Vector3 temp = new Vector3(verticesArray[i], verticesArray[i + 1], verticesArray[i + 2]);
-                                        objVerts.Add(temp);
-                                        i += 2;
+                                        // Read in all floats
+                                        rawVertices.Add(reader.ReadSingle());
+                                        rawVertices.Add(reader.ReadSingle());
+                                        rawVertices.Add(reader.ReadSingle());
+
+                                        if (attrib.Format == GX2AttribFormat.Format_32_32_32_32_Single)
+                                            rawVertices.Add(reader.ReadSingle());
                                     }
 
                                     break;
@@ -77,6 +74,19 @@ namespace RedCarpet.Gfx
                                     throw new Exception("Unsupported attribute format (" + attrib.Format + ")");
                             }
                         }
+
+                        // Convert the vertices list into an array
+                        verticesArray = rawVertices.ToArray();
+
+                        // Create Vector3s for BBox calculations
+                        for (int i = 0; i < verticesArray.Length; i += 3)
+                        {
+                            positionVectors.Add(new Vector3(verticesArray[i], verticesArray[i + 1], verticesArray[i + 2]));
+                        }
+
+                        // Calculate BBox
+                        bboxMax = CalculateBBMax(positionVectors);
+                        bboxMin = CalculateBBMin(positionVectors);
 
                         break;
                     }
@@ -112,6 +122,32 @@ namespace RedCarpet.Gfx
             {
                 mesh.Dispose();
             }
+        }
+
+        private Vector3 CalculateBBMin(List<Vector3> positionVectors)
+        {
+            Vector3 minimum = new Vector3();
+            foreach (Vector3 position in positionVectors)
+            {
+                if (position.X < minimum.X) minimum.X = position.X;
+                if (position.Y < minimum.Y) minimum.Y = position.Y;
+                if (position.Z < minimum.Z) minimum.Z = position.Z;
+            }
+
+            return minimum;
+        }
+
+        private Vector3 CalculateBBMax(List<Vector3> positionVectors)
+        {
+            Vector3 maximum = new Vector3();
+            foreach (Vector3 position in positionVectors)
+            {
+                if (position.X > maximum.X) maximum.X = position.X;
+                if (position.Y > maximum.Y) maximum.Y = position.Y;
+                if (position.Z > maximum.Z) maximum.Z = position.Z;
+            }
+
+            return maximum;
         }
 
     }
