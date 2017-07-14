@@ -54,7 +54,6 @@ namespace RedCarpet.Gfx
                             {
                                 case GX2AttribFormat.Format_32_32_32_32_Single:
                                 case GX2AttribFormat.Format_32_32_32_Single:
-
                                     for (long pos = 0; pos < positionBuffer.Data[0].Length; pos += positionBuffer.Stride)
                                     {
                                         // Seek to the position in the buffer
@@ -104,11 +103,6 @@ namespace RedCarpet.Gfx
         }
 
         public void Render()
-        {
-            RenderMeshes();
-        }
-
-        private void RenderMeshes()
         {
             foreach (SmMesh mesh in meshes)
             {
