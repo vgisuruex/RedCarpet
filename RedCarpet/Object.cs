@@ -12,7 +12,7 @@ namespace RedCarpet
 {
     public class Object 
     {
-        public List<MapObject> mobjs = new List<MapObject>();
+        public Dictionary<string, List<MapObject>> mobjs = new Dictionary<string, List<MapObject>>();
 
         public class MapObject 
         {            

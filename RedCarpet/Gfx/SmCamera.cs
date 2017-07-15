@@ -115,7 +115,7 @@ namespace RedCarpet.Gfx
             return "x = " + X + ", y = " + Y + ", z = " + Z + ", pitch = " + pitch + ", yaw = " + yaw;
         }
 
-        internal Object.MapObject castRay(int mouseX, int mouseY, float controlWidth, float controlHeight, Matrix4 projMatrix, List<Object.MapObject> obj)
+        internal Tuple<string, int> castRay(int mouseX, int mouseY, float controlWidth, float controlHeight, Matrix4 projMatrix, Dictionary<string,List<Object.MapObject>> objs)
         {
             Matrix4 lMat = Matrix4.LookAt(cameraPosition, cameraPosition + cameraFront, cameraUp);
 
@@ -132,19 +132,22 @@ namespace RedCarpet.Gfx
 
             Vector3 normalizedRay = Vector3.Normalize(unNormalizedRay);
 
-            for (int i = 0; i < obj.Count; i++)
+            foreach (string k in objs.Keys)
             {
-                int isHit = checkHitAxisAlignedBoundingBox(cameraPosition, normalizedRay, (obj[i].bbMin) + obj[i].position, (obj[i].bbMax) + obj[i].position);
-                if (isHit == 1)
+                for (int i = 0; i < objs[k].Count; i++)
                 {
-                    string temp = obj[i].unitConfigName;
-                    if (temp.StartsWith("Sky") || temp.Contains("View") || temp.Contains("Step"))
+                    int isHit = checkHitAxisAlignedBoundingBox(cameraPosition, normalizedRay, (objs[k][i].bbMin) + objs[k][i].position, (objs[k][i].bbMax) + objs[k][i].position);
+                    if (isHit == 1)
                     {
-                        isHit = 0;
-                    }
-                    else
-                    {
-                        return obj[i];
+                        string temp = objs[k][i].unitConfigName;
+                        if (temp.StartsWith("Sky") || temp.Contains("View") || temp.Contains("Step"))
+                        {
+                            isHit = 0;
+                        }
+                        else
+                        {
+                            return new Tuple<string, int>(k, i);
+                        }
                     }
                 }
             }

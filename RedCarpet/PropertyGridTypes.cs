@@ -80,7 +80,8 @@ namespace RedCarpet
                     get
                     {
                         if (_dictionary[_key] == null) return new NullConverter();
-                        else if(_dictionary[_key] is IDictionary<string, dynamic>) return new DictionaryConverter();
+                        else if (_dictionary[_key] is IDictionary<string, dynamic>) return new DictionaryConverter();
+                        else if (_dictionary[_key] is IList<dynamic>) return new ArrayNodeConverter();
                         else return TypeDescriptor.GetConverter(_dictionary[_key]);
                     }
                 }
@@ -105,6 +106,92 @@ namespace RedCarpet
                 public override object GetValue(object component)
                 {
                     return _dictionary[_key];
+                }
+
+                public override bool IsReadOnly
+                {
+                    get { return false; }
+                }
+
+                public override Type ComponentType
+                {
+                    get { return null; }
+                }
+
+                public override bool CanResetValue(object component)
+                {
+                    return false;
+                }
+
+                public override void ResetValue(object component)
+                {
+                }
+
+                public override bool ShouldSerializeValue(object component)
+                {
+                    return false;
+                }
+            }
+
+        }
+
+        public class ArrayNodeConverter : System.ComponentModel.TypeConverter
+        {
+            public override bool GetPropertiesSupported(ITypeDescriptorContext context)
+            {
+                return true;
+            }
+
+            public override PropertyDescriptorCollection GetProperties(ITypeDescriptorContext context, object value, Attribute[] attributes)
+            {
+                ArrayList properties = new ArrayList();
+                for (int i = 0; i < ((List<dynamic>)value).Count; i++)
+                {
+                    properties.Add(new ArrayPropertyDescriptor(((List<dynamic>)value)[i], "Item " + i.ToString() + " :"));
+                }
+
+                PropertyDescriptor[] props =
+                    (PropertyDescriptor[])properties.ToArray(typeof(PropertyDescriptor));
+
+                return new PropertyDescriptorCollection(props);
+            }
+
+            public class ArrayPropertyDescriptor : PropertyDescriptor //TODO Fix JIS encoding
+            {
+                dynamic _obj;
+                string _key;
+
+                public override TypeConverter Converter
+                {
+                    get
+                    {
+                        if (_obj == null) return new NullConverter();
+                        else if (_obj is IDictionary<string, dynamic>) return new DictionaryConverter();
+                        else if (_obj is IList<dynamic>) return new ArrayNodeConverter();
+                        else return TypeDescriptor.GetConverter(_obj);
+                    }
+                }
+
+                internal ArrayPropertyDescriptor(dynamic obj, string key)
+                    : base(key, null)
+                {
+                    _obj = obj;
+                    _key = key;
+                }
+
+                public override Type PropertyType
+                {
+                    get { return _obj == null ? null : _obj.GetType(); }
+                }
+
+                public override void SetValue(object component, object value)
+                {
+                    _obj = value;
+                }
+
+                public override object GetValue(object component)
+                {
+                    return _obj;
                 }
 
                 public override bool IsReadOnly

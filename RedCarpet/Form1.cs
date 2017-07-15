@@ -42,6 +42,11 @@ namespace RedCarpet
             }
         }
 
+        private List<MapObject> SelectedSection
+        {
+            get { return loadedMap.mobjs[SectionSelect.Text]; }
+        }
+
         private Vector3 MoveDir;
         private int MouseAxis;
         private Point MouseStart;
@@ -50,19 +55,19 @@ namespace RedCarpet
         private int prevMouseX;
         private int prevMouseY;
         
-        private Object loadedMap = null;
+        private Object loadedMap = null; //Load every section of the byml in dictionary
 
         private static Vector4 blackColor = new Vector4(0.0f, 0.0f, 0.0f, 0.0f);
         private static Vector4 whiteColor = new Vector4(1.0f, 1.0f, 1.0f, 1.0f);
         private static Vector4 orangeColor = new Vector4(1.0f, 0.5f, 0.2f, 1.0f);
 
-        private Dictionary<string, byte[]> LoadedSarc = null;
+        private Dictionary<string, byte[]> LoadedSarc = null; 
         string loadedSarcFileName = "";
         string loadedBymlFileName = ""; //inside the sarc
-        dynamic LoadedByml = null;
+        Dictionary<string, dynamic> LoadedByml = null;
 
-        static string BASEPATH = @"C:\Users\ronal\Desktop\3DWorldKit\SM3DW\content\"; //no need to put the editor in the game's folder, \ at the end matters !!!
-        //static string BASEPATH = @"C:\HAX\WIIU\SUPER MARIO 3D WORLD (EUR)\content\";
+        //static string BASEPATH = @"C:\Users\ronal\Desktop\3DWorldKit\SM3DW\content\"; //no need to put the editor in the game's folder, \ at the end matters !!!
+        static string BASEPATH = @"C:\HAX\WIIU\SUPER MARIO 3D WORLD (EUR)\content\";
 
         public Form1()
         {
@@ -72,12 +77,12 @@ namespace RedCarpet
 
         private void titleDemo00StageDesign1ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
             LoadLevel(BASEPATH + "StageData/" + sender.ToString() + ".szs");
         }
 
         public void DisposeCurrentLevel()
         {
+            SectionSelect.Items.Clear();
             btn_openBymlView.Enabled = false;
             loadedSarcFileName = "";
             loadedBymlFileName = "";
@@ -129,14 +134,29 @@ namespace RedCarpet
             else loadedBymlFileName = name;
 
             LoadedByml = ByamlFile.Load(new MemoryStream(LoadedSarc[loadedBymlFileName]));
+            foreach (string k in LoadedByml.Keys)
+            {
+                if (!(LoadedByml[k] is List<dynamic>)) continue;
+                SectionSelect.Items.Add(k);
+                loadedMap.mobjs.Add(k, new List<MapObject>());
+                LoadObjectsSection(k);
+            }
 
-            IList<dynamic> objs = LoadedByml["Objs"]; // ObjectList works as well
+            if (SectionSelect.Items.Contains("Objs")) SectionSelect.SelectedItem = "Objs";
+            else if (SectionSelect.Items.Contains("ObjectList")) SectionSelect.SelectedItem = "ObjectList";
+            else SectionSelect.SelectedIndex = 0;
+
             cpath.Text = LoadedByml["FilePath"];
+        }
+
+        private void LoadObjectsSection(string section)
+        {
+
+            IList<dynamic> objs = LoadedByml[section]; // ObjectList works as well
             for (int i = 0; i < objs.Count; i++)
             {
                 MapObject Tmp_mpobj = new Object.MapObject(objs[i]);
-                loadedMap.mobjs.Add(Tmp_mpobj);
-                objectsList.Items.Add(Tmp_mpobj.unitConfigName);
+                loadedMap.mobjs[section].Add(Tmp_mpobj);
 
                 // Load the model
                 if (Tmp_mpobj.modelName != null && !Tmp_mpobj.Equals(""))
@@ -281,7 +301,8 @@ namespace RedCarpet
             GL.UniformMatrix4(projectionLocation, false, ref projectionMatrix);
 
             // Render all map objects
-            foreach (MapObject mapObject in loadedMap.mobjs)
+            foreach (string k in loadedMap.mobjs.Keys.ToArray())
+            foreach (MapObject mapObject in loadedMap.mobjs[k])
             {
                 RenderMapObject(mapObject, modelLocation, colorLocation);
             }
@@ -340,6 +361,7 @@ namespace RedCarpet
 
         private void glControl1_MouseMove(object sender, MouseEventArgs e)
         {
+            if (loadedMap == null || LoadedByml == null) return;
             // OpenGL's Y-origin starts at the bottom left, unlike WinForms
             int newY = glControl1.Height - e.Y;
 
@@ -401,9 +423,9 @@ namespace RedCarpet
                             dif = MouseLast.Y - relMouse.Y;
                             break;
                     }
-                    Vector3 old = loadedMap.mobjs[objectsList.SelectedIndex].position;
+                    Vector3 old = SelectedSection[objectsList.SelectedIndex].position;
                     old += MoveDir * dif / 24;
-                    loadedMap.mobjs[objectsList.SelectedIndex].position = old;
+                    SelectedSection[objectsList.SelectedIndex].position = old;
                 }
                 glControl1.Invalidate();
             }
@@ -432,19 +454,14 @@ namespace RedCarpet
                 Point mousePos = MouseLast = MouseStart = glControl1.PointToClient(Cursor.Position);
 
                 int iY = glControl1.Height - e.Y;
-                Object.MapObject obj;
-                obj = camera.castRay(e.X, e.Y, glControl1.Width, glControl1.Height, projectionMatrix, loadedMap.mobjs);
+                var obj = camera.castRay(e.X, e.Y, glControl1.Width, glControl1.Height, projectionMatrix, loadedMap.mobjs);
                 if (obj == null) return;
-                selectObject(obj);
+                SectionSelect.Text = obj.Item1;
+                selectObject(obj.Item2);
             }
         }
         #endregion
-
-        void selectObject(MapObject obj)
-        {
-            selectObject(loadedMap.mobjs.IndexOf(obj));
-        }
-
+        
         void selectObject(int Objindex)
         {
             objectsList.SelectedIndex = Objindex;
@@ -452,7 +469,7 @@ namespace RedCarpet
 
         private void objectsList_SelectedIndexChanged(object sender, EventArgs e)
         {
-            propertyGrid1.SelectedObject = loadedMap.mobjs[objectsList.SelectedIndex];
+            propertyGrid1.SelectedObject = SelectedSection[objectsList.SelectedIndex];
         }
 
         private void propertyValueChanged(object s, PropertyValueChangedEventArgs e)
@@ -535,6 +552,23 @@ namespace RedCarpet
             test.Add("IsPlacementInRouteDokan", false);
             test.Add("LayerConfigName", "Common");
             objectList.Add(test); */
+        }
+
+        private void SectionSelect_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            objectsList.Items.Clear();
+            propertyGrid1.SelectedObject = null;
+            foreach (MapObject m in loadedMap.mobjs[SectionSelect.Text])
+                objectsList.Items.Add(m.unitConfigName);
+        }
+
+        private void objectsList_doubleClick(object sender, EventArgs e)
+        {
+            if (objectsList.SelectedItem != null)
+            {
+                camera.cameraPosition = SelectedSection[objectsList.SelectedIndex].position + new Vector3(100,100,100);
+                glControl1.Invalidate();
+            }
         }
     }
 }
