@@ -104,11 +104,6 @@ namespace RedCarpet.Gfx
 
         public void Render()
         {
-            RenderMeshes();
-        }
-
-        private void RenderMeshes()
-        {
             foreach (SmMesh mesh in meshes)
             {
                 mesh.Render();
