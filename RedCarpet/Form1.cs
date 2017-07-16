@@ -67,7 +67,8 @@ namespace RedCarpet
         Dictionary<string, dynamic> LoadedByml = null;
 
         //static string BASEPATH = @"C:\Users\ronal\Desktop\3DWorldKit\SM3DW\content\"; //no need to put the editor in the game's folder, \ at the end matters !!!
-        static string BASEPATH = @"C:\HAX\WIIU\SUPER MARIO 3D WORLD (EUR)\content\";
+        //static string BASEPATH = @"C:\HAX\WIIU\SUPER MARIO 3D WORLD (EUR)\content\";
+        static string BASEPATH = @"C:\Users\Jul\Documents\WiiU\NewNUSGrabber\0005000010145C00\content\";
 
         public Form1()
         {
@@ -159,18 +160,25 @@ namespace RedCarpet
                 loadedMap.mobjs[section].Add(Tmp_mpobj);
 
                 // Load the model
+                SmModel model;
                 if (Tmp_mpobj.modelName != null && !Tmp_mpobj.Equals(""))
                 {
-                    LoadModel(Tmp_mpobj.modelName);
+                    model = LoadModel(Tmp_mpobj.modelName);
                 }
                 else
                 {
-                    LoadModel(Tmp_mpobj.unitConfigName);
+                    model = LoadModel(Tmp_mpobj.unitConfigName);
+                }
+
+                // Set the object's bounding box if one is found
+                if (model != null)
+                {
+                    Tmp_mpobj.boundingBox = model.boundingBox;
                 }
             }
         }
 
-        private void LoadModel(string modelName)
+        private SmModel LoadModel(string modelName)
         {
             // todo: don't hardcode
             string modelPath = BASEPATH + @"ObjectData\";
@@ -183,19 +191,20 @@ namespace RedCarpet
             modelDict.TryGetValue(modelName, out model);
             if (model != null)
             {
-                return;
+                return model;
             }
 
             if (LoadModelWithBase(modelPath, modelName))
             {
-                return;
+                return modelDict[modelName];
             }
             else if (LoadModelWithBase(stagePath, modelName))
             {
-                return;
+                return modelDict[modelName];
             }
 
             Console.WriteLine("WARN: Could not load a model for " + modelName);
+            return null;
         }
         
         private bool LoadModelWithBase(string basePath, string modelName)
@@ -351,10 +360,6 @@ namespace RedCarpet
             GL.PolygonOffset(-1, -1);
 
             model.Render();
-            mapObject.vertices = model.objVerts;
-
-            mapObject.calcBBMin();
-            mapObject.calcBBMax();
 
             GL.Disable(EnableCap.PolygonOffsetLine);
         }

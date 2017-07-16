@@ -136,7 +136,10 @@ namespace RedCarpet.Gfx
             {
                 for (int i = 0; i < objs[k].Count; i++)
                 {
-                    int isHit = checkHitAxisAlignedBoundingBox(cameraPosition, normalizedRay, (objs[k][i].bbMin) + objs[k][i].position, (objs[k][i].bbMax) + objs[k][i].position);
+                    if (objs[k][i].boundingBox == null)
+                        continue;
+
+                    int isHit = checkHitAxisAlignedBoundingBox(cameraPosition, normalizedRay, objs[k][i].boundingBox, objs[k][i].position);
                     if (isHit == 1)
                     {
                         string temp = objs[k][i].unitConfigName;
@@ -154,9 +157,11 @@ namespace RedCarpet.Gfx
             return null;
         }
 
-        internal int checkHitAxisAlignedBoundingBox(Vector3 eye, Vector3 ray, Vector3 lowerBound, Vector3 upperBound)
+        internal int checkHitAxisAlignedBoundingBox(Vector3 eye, Vector3 ray,  SmBoundingBox boundingBox, Vector3 position)
         {
             Vector3 dirFrac = new Vector3(1.0f / ray.X, 1.0f / ray.Y, 1.0f / ray.Z);
+            Vector3 lowerBound = boundingBox.minimum + position;
+            Vector3 upperBound = boundingBox.maximum + position;
 
             float t1 = (lowerBound.X - eye.X) * dirFrac.X;
             float t2 = (upperBound.X - eye.X) * dirFrac.X;

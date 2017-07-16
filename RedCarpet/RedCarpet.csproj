@@ -87,6 +87,7 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Gfx\SmBoundingBox.cs" />
     <Compile Include="Gfx\SmCamera.cs" />
     <Compile Include="Gfx\SmMesh.cs" />
     <Compile Include="Gfx\SmModel.cs" />

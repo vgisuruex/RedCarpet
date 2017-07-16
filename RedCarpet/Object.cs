@@ -7,6 +7,7 @@ using OpenTK;
 using System.ComponentModel;
 using static RedCarpet.PropertyGridTypes;
 using System.Collections;
+using RedCarpet.Gfx;
 
 namespace RedCarpet
 {
@@ -105,8 +106,7 @@ namespace RedCarpet
 
             public int priority;
             public List<Vector3> vertices = new List<Vector3>();
-            public Vector3 bbMin;
-            public Vector3 bbMax;
+            public SmBoundingBox boundingBox;
 
             private Dictionary<string, dynamic> _bymlNode = null;
 
@@ -116,33 +116,6 @@ namespace RedCarpet
                 _bymlNode = _obj;
             }
 
-            public Vector3 calcBBMin()
-            {
-                Vector3 minTemp = new Vector3();
-                List<Vector3> verts = vertices;
-                for (int i = 0; i < verts.Count; i++)
-                {
-                    if (verts[i].X < minTemp.X) minTemp.X = verts[i].X;
-                    if (verts[i].Y < minTemp.Y) minTemp.Y = verts[i].Y;
-                    if (verts[i].Z < minTemp.Z) minTemp.Z = verts[i].Z;
-                }
-                bbMin = minTemp;
-                return minTemp;
-            }
-
-            public Vector3 calcBBMax()
-            {
-                Vector3 maxTemp = new Vector3();
-                List<Vector3> verts = vertices;
-                for (int i = 0; i < verts.Count; i++)
-                {
-                    if (verts[i].X > maxTemp.X) maxTemp.X = verts[i].X;
-                    if (verts[i].Y > maxTemp.Y) maxTemp.Y = verts[i].Y;
-                    if (verts[i].Z > maxTemp.Z) maxTemp.Z = verts[i].Z;
-                }
-                bbMax = maxTemp;
-                return maxTemp;
-            }
         }
     }
 }

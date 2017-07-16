@@ -12,7 +12,7 @@ namespace RedCarpet.Gfx
     public class SmModel : IDisposable
     {
         private readonly List<SmMesh> meshes = new List<SmMesh>();
-        public List<Vector3> objVerts = new List<Vector3>();
+        public readonly SmBoundingBox boundingBox;
 
         public SmModel(Model model, ByteOrder byteOrder)
         {
@@ -36,6 +36,12 @@ namespace RedCarpet.Gfx
                         // Get the buffer with positions
                         Syroot.NintenTools.Bfres.Buffer positionBuffer = vertexBuffer.Buffers[attrib.BufferIndex];
 
+                        // Create a List to hold the raw vertices
+                        List<float> rawVertices = new List<float>();
+
+                        // Create a List to hold Vector3 positions
+                        List<Vector3> positionVectors = new List<Vector3>();
+
                         // Open a reader to make things easier
                         using (MemoryStream stream = new MemoryStream(positionBuffer.Data[0]))
                         using (BinaryDataReader reader = new BinaryDataReader(stream))
@@ -48,35 +54,38 @@ namespace RedCarpet.Gfx
                                 case GX2AttribFormat.Format_32_32_32_32_Single:
                                 case GX2AttribFormat.Format_32_32_32_Single:
                                     // Read in the whole buffer as floats
-                                    List<float> verticesList = new List<float>();
-
                                     for (long pos = 0; pos < positionBuffer.Data[0].Length; pos += positionBuffer.Stride)
                                     {
                                         reader.Seek(pos, SeekOrigin.Begin);
-                                        verticesList.Add(reader.ReadSingle());
-                                        verticesList.Add(reader.ReadSingle());
-                                        verticesList.Add(reader.ReadSingle());
+
+                                        rawVertices.Add(reader.ReadSingle());
+                                        rawVertices.Add(reader.ReadSingle());
+                                        rawVertices.Add(reader.ReadSingle());
+
                                         if (attrib.Format == GX2AttribFormat.Format_32_32_32_32_Single)
-                                        {
-                                            float temp = reader.ReadSingle();
-                                            verticesList.Add(temp);
-                                         }
+                                            rawVertices.Add(reader.ReadSingle());
                                     }
 
                                     // Convert the list into an array
-                                    verticesArray = verticesList.ToArray();
-                                    for (int i = 0; i < verticesArray.Length; i++)
-                                    {
-                                        Vector3 temp = new Vector3(verticesArray[i], verticesArray[i + 1], verticesArray[i + 2]);
-                                        objVerts.Add(temp);
-                                        i += 2;
-                                    }
+                                    verticesArray = rawVertices.ToArray();
 
                                     break;
                                 default:
                                     throw new Exception("Unsupported attribute format (" + attrib.Format + ")");
                             }
                         }
+
+                        // Convert the list into an array
+                        verticesArray = rawVertices.ToArray();
+
+                        // Create Vector3s for BBox calculation
+                        for (int i = 0; i < rawVertices.Count; i += 3)
+                        {
+                            positionVectors.Add(new Vector3(rawVertices[i], rawVertices[i + 1], rawVertices[i + 2]));
+                        }
+
+                        // Create the bounding box for this model
+                        boundingBox = new SmBoundingBox(positionVectors);
 
                         break;
                     }
