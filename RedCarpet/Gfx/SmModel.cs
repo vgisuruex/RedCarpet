@@ -16,6 +16,9 @@ namespace RedCarpet.Gfx
 
         public SmModel(Model model, ByteOrder byteOrder)
         {
+            // Create a List to hold all shape vertices for BBox calculation
+            List<Vector3> positionVectors = new List<Vector3>();
+
             foreach (String shapeKey in model.Shapes.Keys)
             {
                 Shape shape = model.Shapes[shapeKey];
@@ -38,9 +41,6 @@ namespace RedCarpet.Gfx
 
                         // Create a List to hold the raw vertices
                         List<float> rawVertices = new List<float>();
-
-                        // Create a List to hold Vector3 positions
-                        List<Vector3> positionVectors = new List<Vector3>();
 
                         // Open a reader to make things easier
                         using (MemoryStream stream = new MemoryStream(positionBuffer.Data[0]))
@@ -84,9 +84,6 @@ namespace RedCarpet.Gfx
                             positionVectors.Add(new Vector3(rawVertices[i], rawVertices[i + 1], rawVertices[i + 2]));
                         }
 
-                        // Create the bounding box for this model
-                        boundingBox = new SmBoundingBox(positionVectors);
-
                         break;
                     }
                 }
@@ -100,6 +97,9 @@ namespace RedCarpet.Gfx
                 // Use LoD 0 as the mesh
                 meshes.Add(new SmMesh(shape.Meshes[0], vboId));
             }
+
+            // Create the bounding box for this model
+            boundingBox = new SmBoundingBox(positionVectors);
         }
 
         public void Render()
