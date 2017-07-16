@@ -69,7 +69,7 @@ namespace RedCarpet
 
         //static string BASEPATH = @"C:\Users\ronal\Desktop\3DWorldKit\SM3DW\content\"; //no need to put the editor in the game's folder, \ at the end matters !!!
         //static string BASEPATH = @"C:\HAX\WIIU\SUPER MARIO 3D WORLD (EUR)\content\";
-        static string BASEPATH = @"C:\Users\Jul\Documents\WiiU\NewNUSGrabber\0005000010145C00\content\";
+        static string BASEPATH = @"D:\Archive\Nintendo\WiiU\SM3DW\sm3dw_game\content\";
 
         public Form1()
         {
@@ -555,17 +555,6 @@ namespace RedCarpet
             if (LoadedByml is Dictionary<string, dynamic>) new ByamlViewer(LoadedByml).Show(); else throw new Exception("Not supported");
         }
 
-        private void testSaveLevelToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (LoadedByml == null) return;
-            MemoryStream mem = new MemoryStream();
-            ByamlFile.Save(mem,LoadedByml);
-            LoadedSarc[loadedBymlFileName] = mem.ToArray();
-            SaveFileDialog s = new SaveFileDialog();
-            s.Filter = "szs file|*.szs";
-            if (s.ShowDialog() == DialogResult.OK) File.WriteAllBytes(s.FileName, YAZ0.Compress(SARC.pack(LoadedSarc)));
-        }
-
         private void actorToolStripMenuItem_Click(object sender, EventArgs e)
         {
             // TO DO
@@ -598,6 +587,17 @@ namespace RedCarpet
                 camera.cameraPosition = SelectedSection[objectsList.SelectedIndex].position + new Vector3(100,100,100);
                 glControl1.Invalidate();
             }
+        }
+
+        private void saveToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (LoadedByml == null) return;
+            MemoryStream mem = new MemoryStream();
+            ByamlFile.Save(mem, LoadedByml);
+            LoadedSarc[loadedBymlFileName] = mem.ToArray();
+            SaveFileDialog s = new SaveFileDialog();
+            s.Filter = "szs file|*.szs";
+            if (s.ShowDialog() == DialogResult.OK) File.WriteAllBytes(s.FileName, YAZ0.Compress(SARC.pack(LoadedSarc)));
         }
     }
 }
