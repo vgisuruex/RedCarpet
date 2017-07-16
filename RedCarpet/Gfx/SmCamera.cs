@@ -157,7 +157,7 @@ namespace RedCarpet.Gfx
             return null;
         }
 
-        internal int checkHitAxisAlignedBoundingBox(Vector3 eye, Vector3 ray,  SmBoundingBox boundingBox, Vector3 position)
+        internal int checkHitAxisAlignedBoundingBox(Vector3 eye, Vector3 ray, SmBoundingBox boundingBox, Vector3 position)
         {
             Vector3 dirFrac = new Vector3(1.0f / ray.X, 1.0f / ray.Y, 1.0f / ray.Z);
             Vector3 lowerBound = boundingBox.minimum + position;

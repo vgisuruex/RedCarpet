@@ -60,6 +60,7 @@ namespace RedCarpet
         private static Vector4 blackColor = new Vector4(0.0f, 0.0f, 0.0f, 0.0f);
         private static Vector4 whiteColor = new Vector4(1.0f, 1.0f, 1.0f, 1.0f);
         private static Vector4 orangeColor = new Vector4(1.0f, 0.5f, 0.2f, 1.0f);
+        private static Vector4 blueColor = new Vector4(75.0f / 255.0f, 184.0f / 255.0f, 251.0f / 255.0f, 1.0f);
 
         private Dictionary<string, byte[]> LoadedSarc = null; 
         string loadedSarcFileName = "";
@@ -273,6 +274,14 @@ namespace RedCarpet
 
             // Construct the projection matrix
             projectionMatrix = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(45.0f), (float)glControl1.Width / (float)glControl1.Height, 1.0f, 20000.0f);
+
+            // Check the maximum line width supported
+            float[] widthRange = new float[2];
+            GL.GetFloat(GetPName.LineWidthRange, widthRange);
+            if (widthRange[1] < 3.0f)
+            {
+                throw new Exception("Graphics card or driver does not support required line width");
+            }
         }
 
         private void glControl1_resize(object sender, EventArgs e)
@@ -311,16 +320,20 @@ namespace RedCarpet
 
             // Render all map objects
             foreach (string k in loadedMap.mobjs.Keys.ToArray())
-            foreach (MapObject mapObject in loadedMap.mobjs[k])
             {
-                RenderMapObject(mapObject, modelLocation, colorLocation);
+                bool isSelectedSection = k.Equals(SectionSelect.Text);
+                for (int i = 0; i < loadedMap.mobjs[k].Count; i++)
+                {
+                    MapObject mapObject = loadedMap.mobjs[k][i];
+                    RenderMapObject(mapObject, (isSelectedSection && objectsList.SelectedIndex == i), modelLocation, colorLocation);
+                }
             }
 
             // Swap buffers
             glControl1.SwapBuffers();
         }
 
-        private void RenderMapObject(MapObject mapObject, int modelLocation, int colorLocation) //TODO: add scale and rotation
+        private void RenderMapObject(MapObject mapObject, bool selected, int modelLocation, int colorLocation) //TODO: add scale and rotation
         {
             // Try to get the model via the UnitConfigName or ModelName
             SmModel model;
@@ -361,7 +374,18 @@ namespace RedCarpet
 
             model.Render();
 
+            // Check if this is the currently selected object
+            if (selected)
+            {
+                // Render the bounding box
+                GL.Uniform4(colorLocation, blueColor);
+                GL.LineWidth(3.0f);
+
+                model.boundingBox.Render();
+            }
+
             GL.Disable(EnableCap.PolygonOffsetLine);
+            GL.LineWidth(1.0f);
         }
 
         private void glControl1_MouseMove(object sender, MouseEventArgs e)
