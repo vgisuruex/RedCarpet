@@ -312,7 +312,7 @@ namespace RedCarpet
             int colorLocation = shaderProgram.GetUniformLocation("colorVec");
 
             // Set uniforms
-            Matrix4 viewMatrix = camera.ToMatrix4();
+            Matrix4 viewMatrix = camera.CalculateLookAt();
 
             shaderProgram.Use();
             GL.UniformMatrix4(viewLocation, false, ref viewMatrix);

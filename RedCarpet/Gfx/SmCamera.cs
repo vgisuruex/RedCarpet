@@ -7,14 +7,12 @@ namespace RedCarpet.Gfx
     public class SmCamera
     {
         // Constants
-        //public readonly Vector3 cameraFront = new Vector3(0.0f, 0.0f, -1.0f);
         private readonly Vector3 cameraUp = new Vector3(0.0f, 1.0f, 0.0f);
+        private float _pitch;
+        private float _yaw;
 
-        // Internals
         public Vector3 cameraFront = new Vector3(0.0f, 0.0f, -1.0f);
         public Vector3 cameraPosition = Vector3.Zero;
-        private float pitchInternal;
-        private float yawInternal;
 
         // Position
         public float X
@@ -58,11 +56,11 @@ namespace RedCarpet.Gfx
         {
             get
             {
-                return pitchInternal;
+                return _pitch;
             }
             set
             {
-                pitchInternal = ClampAngle(value);
+                _pitch = ClampAngle(value);
             }
         }
 
@@ -70,11 +68,11 @@ namespace RedCarpet.Gfx
         {
             get
             {
-                return yawInternal;
+                return _yaw;
             }
             set
             {
-                yawInternal = ClampAngle(value);
+                _yaw = ClampAngle(value);
             }
         }
 
@@ -87,17 +85,7 @@ namespace RedCarpet.Gfx
             yaw = 0.0f;
         }
 
-        private static float ClampAngle(float angle)
-        {
-            if (angle < -360.0f)
-                angle = -360.0f;
-            if (angle > 360.0f)
-                angle = 360.0f;
-
-            return angle;
-        }
-
-        public Matrix4 ToMatrix4()
+        public Matrix4 CalculateLookAt()
         {
             // Update cameraFront with the current yaw and pitch
             cameraFront.X = (float)Math.Cos(yaw) * (float)Math.Cos(pitch);
@@ -110,14 +98,9 @@ namespace RedCarpet.Gfx
             return matrix;
         }
 
-        public override string ToString()
+        public Tuple<string, int> castRay(int mouseX, int mouseY, float controlWidth, float controlHeight, Matrix4 projMatrix, Dictionary<string,List<Object.MapObject>> objs)
         {
-            return "x = " + X + ", y = " + Y + ", z = " + Z + ", pitch = " + pitch + ", yaw = " + yaw;
-        }
-
-        internal Tuple<string, int> castRay(int mouseX, int mouseY, float controlWidth, float controlHeight, Matrix4 projMatrix, Dictionary<string,List<Object.MapObject>> objs)
-        {
-            Matrix4 lMat = Matrix4.LookAt(cameraPosition, cameraPosition + cameraFront, cameraUp);
+            Matrix4 lMat = CalculateLookAt();
 
             Vector3 normDevCoordsRay = new Vector3((2.0f * mouseX) / controlWidth - 1.0f,
                 1.0f - (2.0f * mouseY) / controlHeight, -1.0f);
@@ -157,7 +140,22 @@ namespace RedCarpet.Gfx
             return null;
         }
 
-        internal int checkHitAxisAlignedBoundingBox(Vector3 eye, Vector3 ray, SmBoundingBox boundingBox, Vector3 position)
+        public override string ToString()
+        {
+            return "x = " + X + ", y = " + Y + ", z = " + Z + ", pitch = " + pitch + ", yaw = " + yaw;
+        }
+
+        private static float ClampAngle(float angle)
+        {
+            if (angle < -360.0f)
+                angle = -360.0f;
+            if (angle > 360.0f)
+                angle = 360.0f;
+
+            return angle;
+        }
+
+        private int checkHitAxisAlignedBoundingBox(Vector3 eye, Vector3 ray, SmBoundingBox boundingBox, Vector3 position)
         {
             Vector3 dirFrac = new Vector3(1.0f / ray.X, 1.0f / ray.Y, 1.0f / ray.Z);
             Vector3 lowerBound = boundingBox.minimum + position;
