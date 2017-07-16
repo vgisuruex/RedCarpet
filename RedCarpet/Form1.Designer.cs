@@ -39,7 +39,6 @@
             this.titleDemo00StageMapToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.createToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.actorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.testSaveLevelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.label1 = new System.Windows.Forms.Label();
             this.cpath = new System.Windows.Forms.TextBox();
             this.objectsList = new System.Windows.Forms.ListBox();
@@ -49,6 +48,7 @@
             this.SectionSelect = new System.Windows.Forms.ComboBox();
             this.btn_openBymlView = new System.Windows.Forms.Button();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
+            this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -65,8 +65,7 @@
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
             this.stageToolStripMenuItem,
-            this.createToolStripMenuItem,
-            this.testSaveLevelToolStripMenuItem});
+            this.createToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(960, 24);
@@ -76,9 +75,10 @@
             // fileToolStripMenuItem
             // 
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.bymlViewerToolStripMenuItem,
             this.openLevelToolStripMenuItem,
+            this.saveToolStripMenuItem,
             this.toolStripSeparator1,
+            this.bymlViewerToolStripMenuItem,
             this.closeCurrentLevelToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
@@ -147,13 +147,6 @@
             this.actorToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
             this.actorToolStripMenuItem.Text = "Actor";
             this.actorToolStripMenuItem.Click += new System.EventHandler(this.actorToolStripMenuItem_Click);
-            // 
-            // testSaveLevelToolStripMenuItem
-            // 
-            this.testSaveLevelToolStripMenuItem.Name = "testSaveLevelToolStripMenuItem";
-            this.testSaveLevelToolStripMenuItem.Size = new System.Drawing.Size(93, 20);
-            this.testSaveLevelToolStripMenuItem.Text = "Test save level";
-            this.testSaveLevelToolStripMenuItem.Click += new System.EventHandler(this.testSaveLevelToolStripMenuItem_Click);
             // 
             // label1
             // 
@@ -284,6 +277,13 @@
             this.splitContainer2.SplitterDistance = 616;
             this.splitContainer2.TabIndex = 14;
             // 
+            // saveToolStripMenuItem
+            // 
+            this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
+            this.saveToolStripMenuItem.Text = "Save level";
+            this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -328,11 +328,11 @@
         private System.Windows.Forms.PropertyGrid propertyGrid1;
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.Button btn_openBymlView;
-        private System.Windows.Forms.ToolStripMenuItem testSaveLevelToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem createToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem actorToolStripMenuItem;
         private System.Windows.Forms.ComboBox SectionSelect;
         private System.Windows.Forms.SplitContainer splitContainer2;
+        private System.Windows.Forms.ToolStripMenuItem saveToolStripMenuItem;
     }
 }
 
