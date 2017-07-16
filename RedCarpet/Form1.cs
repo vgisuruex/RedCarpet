@@ -355,7 +355,7 @@ namespace RedCarpet
             Matrix4 finalMat = scaleMat * (rotXMat * rotYMat * rotZMat) * positionMat;
 
             // Set the position in the shader
-            GL.UniformMatrix4(modelLocation, false, ref positionMat);
+            GL.UniformMatrix4(modelLocation, false, ref finalMat);
 
             // Render filled triangles
             GL.Uniform4(colorLocation, mapObject.objectID.Equals("stageObject") ? whiteColor : whiteColor);
