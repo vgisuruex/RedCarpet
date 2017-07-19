@@ -42,5 +42,10 @@ namespace RedCarpet
                 this.Close(); // let the window disappear
             }
         }
+
+        private void StageSelectForm_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }
