@@ -69,17 +69,12 @@ namespace RedCarpet
 
         //static string BASEPATH = @"C:\Users\ronal\Desktop\3DWorldKit\SM3DW\content\"; //no need to put the editor in the game's folder, \ at the end matters !!!
         //static string BASEPATH = @"C:\HAX\WIIU\SUPER MARIO 3D WORLD (EUR)\content\";
-        static string BASEPATH = @"D:\Archive\Nintendo\WiiU\SM3DW\sm3dw_game\content\";
+        public static string BASEPATH = @"D:\Archive\Nintendo\WiiU\SM3DW\sm3dw_game\content\";
 
         public Form1()
         {
             InitializeComponent();
             if (!Directory.Exists(BASEPATH)) throw new Exception("set BASEPATH to the game's folder");
-        }
-
-        private void titleDemo00StageDesign1ToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            LoadLevel(BASEPATH + "StageData/" + sender.ToString() + ".szs");
         }
 
         public void DisposeCurrentLevel()
@@ -598,6 +593,22 @@ namespace RedCarpet
             SaveFileDialog s = new SaveFileDialog();
             s.Filter = "szs file|*.szs";
             if (s.ShowDialog() == DialogResult.OK) File.WriteAllBytes(s.FileName, YAZ0.Compress(SARC.pack(LoadedSarc)));
+        }
+
+        private void stageToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void titleToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void selectStageToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            StageSelectForm form = new StageSelectForm();
+            form.ShowDialog(this);
         }
     }
 }

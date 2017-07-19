@@ -30,13 +30,11 @@
         {
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.bymlViewerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openLevelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.bymlViewerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.closeCurrentLevelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.stageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.titleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.titleDemo00StageMapToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.createToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.actorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.label1 = new System.Windows.Forms.Label();
@@ -48,7 +46,7 @@
             this.SectionSelect = new System.Windows.Forms.ComboBox();
             this.btn_openBymlView = new System.Windows.Forms.Button();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
-            this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.selectStageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -64,7 +62,6 @@
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
-            this.stageToolStripMenuItem,
             this.createToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
@@ -75,6 +72,7 @@
             // fileToolStripMenuItem
             // 
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.selectStageToolStripMenuItem,
             this.openLevelToolStripMenuItem,
             this.saveToolStripMenuItem,
             this.toolStripSeparator1,
@@ -84,6 +82,25 @@
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "File";
             // 
+            // openLevelToolStripMenuItem
+            // 
+            this.openLevelToolStripMenuItem.Name = "openLevelToolStripMenuItem";
+            this.openLevelToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
+            this.openLevelToolStripMenuItem.Text = "Open external level";
+            this.openLevelToolStripMenuItem.Click += new System.EventHandler(this.openLevelToolStripMenuItem_Click);
+            // 
+            // saveToolStripMenuItem
+            // 
+            this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
+            this.saveToolStripMenuItem.Text = "Save level";
+            this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(168, 6);
+            // 
             // bymlViewerToolStripMenuItem
             // 
             this.bymlViewerToolStripMenuItem.Name = "bymlViewerToolStripMenuItem";
@@ -91,47 +108,12 @@
             this.bymlViewerToolStripMenuItem.Text = "Byml viewer";
             this.bymlViewerToolStripMenuItem.Click += new System.EventHandler(this.bymlViewerToolStripMenuItem_Click);
             // 
-            // openLevelToolStripMenuItem
-            // 
-            this.openLevelToolStripMenuItem.Name = "openLevelToolStripMenuItem";
-            this.openLevelToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
-            this.openLevelToolStripMenuItem.Text = "Open level";
-            this.openLevelToolStripMenuItem.Click += new System.EventHandler(this.openLevelToolStripMenuItem_Click);
-            // 
-            // toolStripSeparator1
-            // 
-            this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(168, 6);
-            // 
             // closeCurrentLevelToolStripMenuItem
             // 
             this.closeCurrentLevelToolStripMenuItem.Name = "closeCurrentLevelToolStripMenuItem";
             this.closeCurrentLevelToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
             this.closeCurrentLevelToolStripMenuItem.Text = "Close current level";
             this.closeCurrentLevelToolStripMenuItem.Click += new System.EventHandler(this.closeCurrentLevelToolStripMenuItem_Click);
-            // 
-            // stageToolStripMenuItem
-            // 
-            this.stageToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.titleToolStripMenuItem});
-            this.stageToolStripMenuItem.Name = "stageToolStripMenuItem";
-            this.stageToolStripMenuItem.Size = new System.Drawing.Size(48, 20);
-            this.stageToolStripMenuItem.Text = "Stage";
-            // 
-            // titleToolStripMenuItem
-            // 
-            this.titleToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.titleDemo00StageMapToolStripMenuItem});
-            this.titleToolStripMenuItem.Name = "titleToolStripMenuItem";
-            this.titleToolStripMenuItem.Size = new System.Drawing.Size(97, 22);
-            this.titleToolStripMenuItem.Text = "Title";
-            // 
-            // titleDemo00StageMapToolStripMenuItem
-            // 
-            this.titleDemo00StageMapToolStripMenuItem.Name = "titleDemo00StageMapToolStripMenuItem";
-            this.titleDemo00StageMapToolStripMenuItem.Size = new System.Drawing.Size(209, 22);
-            this.titleDemo00StageMapToolStripMenuItem.Text = "EnterCatMarioStageMap1";
-            this.titleDemo00StageMapToolStripMenuItem.Click += new System.EventHandler(this.titleDemo00StageDesign1ToolStripMenuItem_Click);
             // 
             // createToolStripMenuItem
             // 
@@ -277,12 +259,12 @@
             this.splitContainer2.SplitterDistance = 616;
             this.splitContainer2.TabIndex = 14;
             // 
-            // saveToolStripMenuItem
+            // selectStageToolStripMenuItem
             // 
-            this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
-            this.saveToolStripMenuItem.Text = "Save level";
-            this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
+            this.selectStageToolStripMenuItem.Name = "selectStageToolStripMenuItem";
+            this.selectStageToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
+            this.selectStageToolStripMenuItem.Text = "Select stage";
+            this.selectStageToolStripMenuItem.Click += new System.EventHandler(this.selectStageToolStripMenuItem_Click);
             // 
             // Form1
             // 
@@ -314,9 +296,6 @@
         #endregion
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem stageToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem titleToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem titleDemo00StageMapToolStripMenuItem;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox cpath;
         private OpenTK.GLControl glControl1;
@@ -333,6 +312,7 @@
         private System.Windows.Forms.ComboBox SectionSelect;
         private System.Windows.Forms.SplitContainer splitContainer2;
         private System.Windows.Forms.ToolStripMenuItem saveToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem selectStageToolStripMenuItem;
     }
 }
 

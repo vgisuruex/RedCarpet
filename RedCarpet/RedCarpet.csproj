@@ -105,6 +105,12 @@
     <Compile Include="Serialization\ByamlSerializerSettings.cs" />
     <Compile Include="Serialization\IByamlSerializable.cs" />
     <Compile Include="Serialization\TypeInfoExtensions.cs" />
+    <Compile Include="StageSelectForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="StageSelectForm.Designer.cs">
+      <DependentUpon>StageSelectForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Yaz0Compression.cs" />
     <EmbeddedResource Include="ByamlViewer.resx">
       <DependentUpon>ByamlViewer.cs</DependentUpon>
@@ -122,6 +128,9 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <EmbeddedResource Include="StageSelectForm.resx">
+      <DependentUpon>StageSelectForm.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="FragmentShader.glsl" />
     <None Include="OpenTK.dll.config" />
     <None Include="packages.config" />
