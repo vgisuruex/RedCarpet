@@ -49,7 +49,8 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.Name = "StageSelectForm";
-            this.Text = "StageSelectForm";
+            this.Text = "Stage Select";
+            this.Load += new System.EventHandler(this.StageSelectForm_Load);
             this.ResumeLayout(false);
 
         }
