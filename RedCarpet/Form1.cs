@@ -23,6 +23,7 @@ using System.Diagnostics;
  * OatmealDome
  * Ray Koopa
  * Exelix :D
+ * Simon
  */
 
 namespace RedCarpet
