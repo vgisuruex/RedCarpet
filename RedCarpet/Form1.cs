@@ -48,6 +48,17 @@ namespace RedCarpet
             get { return loadedMap.mobjs[SectionSelect.Text]; }
         }
 
+        private int SelectedIndex
+        {
+            get { return objectsList.SelectedIndex; }
+            set { objectsList.SelectedIndex = value; }
+        }
+
+        private string SelectedSectionName
+        {
+            get { return SectionSelect.Text; }
+        }
+
         private Vector3 MoveDir;
         private int MouseAxis;
         private Point MouseStart;
@@ -68,14 +79,11 @@ namespace RedCarpet
         string loadedBymlFileName = ""; //inside the sarc
         Dictionary<string, dynamic> LoadedByml = null;
 
-        //static string BASEPATH = @"C:\Users\ronal\Desktop\3DWorldKit\SM3DW\content\"; //no need to put the editor in the game's folder, \ at the end matters !!!
-        //static string BASEPATH = @"C:\HAX\WIIU\SUPER MARIO 3D WORLD (EUR)\content\";
-        public static string BASEPATH = @"D:\Archive\Nintendo\WiiU\SM3DW\sm3dw_game\content\";
+        private int LevelHighestId = 0;       
 
         public Form1()
         {
-            InitializeComponent();
-            if (!Directory.Exists(BASEPATH)) throw new Exception("set BASEPATH to the game's folder");
+            InitializeComponent();           
         }
 
         public void DisposeCurrentLevel()
@@ -94,6 +102,22 @@ namespace RedCarpet
             loadedMap = null;
             glControl1.Invalidate();
             GC.Collect();
+        }
+
+        void MakeByml()
+        {
+            LoadedByml = new Dictionary<string, dynamic>();
+            LoadedByml.Add("Objs", new List<dynamic>()); //Looks like the Objs section contains a copy of every object of the other sections 
+            foreach (string k in SectionSelect.Items)
+            { 
+                if (!LoadedByml.ContainsKey(k)) LoadedByml.Add(k, new List<dynamic>());
+                foreach (MapObject m in loadedMap.mobjs[k])
+                {
+                    ((List<dynamic>)LoadedByml[k]).Add(m.AllProperties);
+                    ((List<dynamic>)LoadedByml["Objs"]).Add(m.AllProperties);
+                }
+            }
+            LoadedByml.Add("FilePath", cpath.Text);
         }
 
         public void LoadLevel(string filename)
@@ -134,7 +158,7 @@ namespace RedCarpet
             LoadedByml = ByamlFile.Load(new MemoryStream(LoadedSarc[loadedBymlFileName]));
             foreach (string k in LoadedByml.Keys)
             {
-                if (!(LoadedByml[k] is List<dynamic>)) continue;
+                if (!(LoadedByml[k] is List<dynamic>) || k == "Objs") continue;
                 SectionSelect.Items.Add(k);
                 loadedMap.mobjs.Add(k, new List<MapObject>());
                 LoadObjectsSection(k);
@@ -148,13 +172,13 @@ namespace RedCarpet
         }
 
         private void LoadObjectsSection(string section)
-        {
-
+        { 
             IList<dynamic> objs = LoadedByml[section]; // ObjectList works as well
             for (int i = 0; i < objs.Count; i++)
             {
                 MapObject Tmp_mpobj = new Object.MapObject(objs[i]);
-                loadedMap.mobjs[section].Add(Tmp_mpobj);
+                int ID = int.Parse(Tmp_mpobj.objectID.Remove(0, 3));
+                if (ID > LevelHighestId) LevelHighestId = ID;
 
                 // Load the model
                 SmModel model;
@@ -172,14 +196,16 @@ namespace RedCarpet
                 {
                     Tmp_mpobj.boundingBox = model.boundingBox;
                 }
+
+                loadedMap.mobjs[section].Add(Tmp_mpobj);
             }
         }
 
         private SmModel LoadModel(string modelName)
         {
             // todo: don't hardcode
-            string modelPath = BASEPATH + @"ObjectData\";
-            string stagePath = BASEPATH + @"stageModel\";
+            string modelPath = Properties.Settings.Default.GamePath + @"ObjectData\";
+            string stagePath = Properties.Settings.Default.GamePath + @"stageModel\";
 
             if (!Directory.Exists("Models")) Directory.CreateDirectory("Models"); //Models once unpacked will be saved in the editor's directory instead of the game folder
 
@@ -317,11 +343,11 @@ namespace RedCarpet
             // Render all map objects
             foreach (string k in loadedMap.mobjs.Keys.ToArray())
             {
-                bool isSelectedSection = k.Equals(SectionSelect.Text);
+                bool isSelectedSection = k.Equals(SelectedSectionName);
                 for (int i = 0; i < loadedMap.mobjs[k].Count; i++)
                 {
                     MapObject mapObject = loadedMap.mobjs[k][i];
-                    RenderMapObject(mapObject, (isSelectedSection && objectsList.SelectedIndex == i), modelLocation, colorLocation);
+                    RenderMapObject(mapObject, (isSelectedSection && SelectedIndex == i), modelLocation, colorLocation);
                 }
             }
 
@@ -354,7 +380,7 @@ namespace RedCarpet
             GL.UniformMatrix4(modelLocation, false, ref finalMat);
 
             // Render filled triangles
-            GL.Uniform4(colorLocation, mapObject.objectID.Equals("stageObject") ? whiteColor : whiteColor);
+            GL.Uniform4(colorLocation, mapObject.unitConfigName.Equals("stageObject") ? whiteColor : whiteColor);
             GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill);
             GL.Enable(EnableCap.PolygonOffsetFill);
             GL.PolygonOffset(1, 1);
@@ -436,7 +462,7 @@ namespace RedCarpet
                         MouseAxis = 2;
                     }
                 }
-                else
+                else if (SelectedIndex != -1)
                 {
                     float dif = 0.0f;
                     switch (Math.Abs(MouseAxis))
@@ -448,9 +474,9 @@ namespace RedCarpet
                             dif = MouseLast.Y - relMouse.Y;
                             break;
                     }
-                    Vector3 old = SelectedSection[objectsList.SelectedIndex].position;
+                    Vector3 old = SelectedSection[SelectedIndex].position;
                     old += MoveDir * dif / 24;
-                    SelectedSection[objectsList.SelectedIndex].position = old;
+                    SelectedSection[SelectedIndex].position = old;
                 }
                 glControl1.Invalidate();
             }
@@ -489,28 +515,26 @@ namespace RedCarpet
         
         void selectObject(int Objindex)
         {
-            objectsList.SelectedIndex = Objindex;
+            SelectedIndex = Objindex;
+            glControl1.Invalidate();
         }
 
         private void objectsList_SelectedIndexChanged(object sender, EventArgs e)
         {
-            propertyGrid1.SelectedObject = SelectedSection[objectsList.SelectedIndex];
+            if (SelectedIndex == -1) propertyGrid1.SelectedObject = null;
+            else propertyGrid1.SelectedObject = SelectedSection[SelectedIndex];
         }
 
         private void propertyValueChanged(object s, PropertyValueChangedEventArgs e)
         {
             glControl1_Paint(null,null);
         }
-
-        private void Form1_Load(object sender, EventArgs e)
-        {
-
-        }
+       
 
         private void bymlViewerToolStripMenuItem_Click(object sender, EventArgs e)
         {
             OpenFileDialog opn = new OpenFileDialog();
-            opn.InitialDirectory = BASEPATH + "StageData";
+            opn.InitialDirectory = Properties.Settings.Default.GamePath + "StageData";
             opn.Filter = "byml files, szs files |*.byml;*.szs";
             if (opn.ShowDialog() != DialogResult.OK) return;
             dynamic byml = null;
@@ -535,7 +559,7 @@ namespace RedCarpet
         private void openLevelToolStripMenuItem_Click(object sender, EventArgs e)
         {
             OpenFileDialog opn = new OpenFileDialog();
-            opn.InitialDirectory = BASEPATH + "StageData";
+            opn.InitialDirectory = Properties.Settings.Default.GamePath + "StageData";
             opn.Filter = "szs files | *.szs";
             if (opn.ShowDialog() != DialogResult.OK) return;
             LoadLevel(opn.FileName);
@@ -572,7 +596,7 @@ namespace RedCarpet
         {
             objectsList.Items.Clear();
             propertyGrid1.SelectedObject = null;
-            foreach (MapObject m in loadedMap.mobjs[SectionSelect.Text])
+            foreach (MapObject m in loadedMap.mobjs[SelectedSectionName])
                 objectsList.Items.Add(m.unitConfigName);
         }
 
@@ -580,7 +604,7 @@ namespace RedCarpet
         {
             if (objectsList.SelectedItem != null)
             {
-                camera.cameraPosition = SelectedSection[objectsList.SelectedIndex].position + new Vector3(100,100,100);
+                camera.cameraPosition = SelectedSection[SelectedIndex].position + new Vector3(100,100,100);
                 glControl1.Invalidate();
             }
         }
@@ -588,10 +612,12 @@ namespace RedCarpet
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (LoadedByml == null) return;
+            MakeByml();
             MemoryStream mem = new MemoryStream();
             ByamlFile.Save(mem, LoadedByml);
             LoadedSarc[loadedBymlFileName] = mem.ToArray();
             SaveFileDialog s = new SaveFileDialog();
+            s.FileName = Path.GetFileName(loadedSarcFileName);
             s.Filter = "szs file|*.szs";
             if (s.ShowDialog() == DialogResult.OK) File.WriteAllBytes(s.FileName, YAZ0.Compress(SARC.pack(LoadedSarc)));
         }
@@ -610,6 +636,68 @@ namespace RedCarpet
         {
             StageSelectForm form = new StageSelectForm();
             form.ShowDialog(this);
+        }
+
+        private void Form1_shown(object sender, EventArgs e) 
+        {
+            if (Properties.Settings.Default.GamePath.Trim() == "" || !Directory.Exists(Properties.Settings.Default.GamePath))
+            {               
+                if (!SelectGameFolder())   
+                {
+                    MessageBox.Show("To use this editor you must have the game's files");
+                    this.Close();
+                }
+            }
+        }
+
+        private bool SelectGameFolder()
+        {
+            MessageBox.Show("Select the game's content folder");
+            FolderBrowserDialog fd = new FolderBrowserDialog();
+            if (fd.ShowDialog() == DialogResult.OK)
+            {
+                Properties.Settings.Default.GamePath = (fd.SelectedPath.EndsWith("\\") || fd.SelectedPath.EndsWith("/")) ? fd.SelectedPath : fd.SelectedPath + "\\";
+                Properties.Settings.Default.Save();
+                return true;
+            }
+            return false;
+        }
+
+        private void changeGameFolderToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SelectGameFolder();
+        }
+
+        private void btn_duplicate_Click(object sender, EventArgs e)
+        {
+            MapObject m = (MapObject)SelectedSection[SelectedIndex].Clone();
+            LevelHighestId++;
+            m.objectID = "obj" + LevelHighestId.ToString();
+            AddObject(m, SelectedSectionName);
+        }
+
+        public void AddObject(MapObject obj , string section)
+        {            
+            loadedMap.mobjs[section].Add(obj);
+            if (section == SelectedSectionName)
+            {
+                objectsList.Items.Add(obj.unitConfigName);
+                SelectedIndex = objectsList.Items.Count - 1;
+            }
+            glControl1.Invalidate();
+        }
+
+        private void btn_del_Click(object sender, EventArgs e)
+        {
+            DeleteObject(SelectedSectionName, SelectedIndex);
+        }
+
+        public void DeleteObject(string section, int index)
+        {
+            if (propertyGrid1.SelectedObject == loadedMap.mobjs[section][index]) propertyGrid1.SelectedObject = null;
+            loadedMap.mobjs[section].RemoveAt(index);
+            if (SelectedSection == loadedMap.mobjs[section]) objectsList.Items.RemoveAt(index);
+            glControl1.Invalidate();
         }
     }
 }

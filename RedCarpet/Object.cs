@@ -15,7 +15,7 @@ namespace RedCarpet
     {
         public Dictionary<string, List<MapObject>> mobjs = new Dictionary<string, List<MapObject>>();
 
-        public class MapObject 
+        public class MapObject : ICloneable
         {            
 
             public dynamic this[string v]
@@ -116,6 +116,31 @@ namespace RedCarpet
                 _bymlNode = _obj;
             }
 
+            public object Clone()
+            {
+                MapObject o =  new MapObject(CloneDict(_bymlNode));
+                o.priority = priority;
+                o.vertices = new List<Vector3>();
+                foreach (Vector3 v in vertices) o.vertices.Add(v);
+                o.boundingBox = boundingBox;
+                return o;
+            }
+
+            Dictionary<string, dynamic> CloneDict(Dictionary<string, dynamic> dict)
+            {
+                Dictionary<string, dynamic> res = new Dictionary<string, dynamic>();
+                foreach (string k in dict.Keys)
+                {
+                    if (dict[k] is Dictionary<string, dynamic> && k != "Links") res.Add(k, CloneDict(dict[k])); //Links aren't cloned
+                    else if (dict[k] is ICloneable) res.Add(k, ((ICloneable)dict[k]).Clone());
+                    else
+                    {
+                        if (dict[k] != null) System.Diagnostics.Debug.WriteLine("WARNING: CloneDict - " + k + " of type " + ((Type)dict[k].GetType()).ToString() + " is not ICloneable");
+                        res.Add(k, dict[k]);
+                    }
+                }
+                return res;
+            }
         }
     }
 }
