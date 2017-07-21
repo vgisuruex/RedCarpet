@@ -45,11 +45,6 @@ namespace RedCarpet
             }
         }
 
-        private void StageSelectForm_Load(object sender, EventArgs e)
-        {
-
-        }
-
         private void TextSearch_TextChanged(object sender, EventArgs e)
         {
             if (TextSearch.Text.Trim() == "" && StageSelectListBox.Items.Count == LevelsList.Length) return;

@@ -622,16 +622,6 @@ namespace RedCarpet
             if (s.ShowDialog() == DialogResult.OK) File.WriteAllBytes(s.FileName, YAZ0.Compress(SARC.pack(LoadedSarc)));
         }
 
-        private void stageToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void titleToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-
-        }
-
         private void selectStageToolStripMenuItem_Click(object sender, EventArgs e)
         {
             StageSelectForm form = new StageSelectForm();

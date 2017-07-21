@@ -62,7 +62,6 @@
             this.MaximizeBox = false;
             this.Name = "StageSelectForm";
             this.Text = "Stage Select";
-            this.Load += new System.EventHandler(this.StageSelectForm_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
