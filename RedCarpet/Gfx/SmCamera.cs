@@ -1,6 +1,7 @@
 ﻿using OpenTK;
 using System;
 using System.Collections.Generic;
+using static RedCarpet.Object;
 
 namespace RedCarpet.Gfx
 {
@@ -119,10 +120,21 @@ namespace RedCarpet.Gfx
             {
                 for (int i = 0; i < objs[k].Count; i++)
                 {
-                    if (objs[k][i].boundingBox == null)
+                    if (objs[k][i].boundingBox == null && !objs[k][i].RequiresCustomRendering)
                         continue;
 
-                    int isHit = checkHitAxisAlignedBoundingBox(cameraPosition, normalizedRay, objs[k][i].boundingBox, objs[k][i].position);
+                    int isHit = 0;
+                    if (objs[k][i].RequiresCustomRendering)
+                    {
+                        foreach (SubObjectBoundingBox b in objs[k][i].GetSubObjectMeshes())
+                        {
+                            isHit = checkHitAxisAlignedBoundingBox(cameraPosition, normalizedRay, b.box, b.Position);
+                            if (isHit == 1) break;
+                        }
+                    }
+                    else isHit = checkHitAxisAlignedBoundingBox(cameraPosition, normalizedRay, objs[k][i].boundingBox, objs[k][i].position);
+
+
                     if (isHit == 1)
                     {
                         string temp = objs[k][i].unitConfigName;
@@ -138,6 +150,32 @@ namespace RedCarpet.Gfx
                 }
             }
             return null;
+        }
+
+        public int CastRayToSubObjects(int mouseX, int mouseY, float controlWidth, float controlHeight, Matrix4 projMatrix, SubObjectBoundingBox[] objs)
+        {
+            Matrix4 lMat = CalculateLookAt();
+
+            Vector3 normDevCoordsRay = new Vector3((2.0f * mouseX) / controlWidth - 1.0f,
+                1.0f - (2.0f * mouseY) / controlHeight, -1.0f);
+
+            Vector4 clipRay = new Vector4(normDevCoordsRay, 1.0f);
+
+            Vector4 eyeRay = Vector4.Transform(clipRay, Matrix4.Invert(projMatrix));
+
+            eyeRay = new Vector4(eyeRay.X, eyeRay.Y, -1, 0);
+
+            Vector3 unNormalizedRay = new Vector3(Vector4.Transform(eyeRay, Matrix4.Invert(lMat)).Xyz);
+
+            Vector3 normalizedRay = Vector3.Normalize(unNormalizedRay);
+
+            for (int i = 0; i < objs.Length; i++)
+            {
+                int isHit = checkHitAxisAlignedBoundingBox(cameraPosition, normalizedRay, objs[i].box, objs[i].Position);
+                if (isHit == 1) return i;
+            }
+
+            return -1;
         }
 
         public override string ToString()

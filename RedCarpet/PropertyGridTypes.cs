@@ -56,6 +56,11 @@ namespace RedCarpet
                 return true;
             }
 
+            public override object ConvertTo(System.ComponentModel.ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value, Type destinationType)
+            {
+                return "<Dictionary node>";
+            }
+
             public override PropertyDescriptorCollection GetProperties(ITypeDescriptorContext context, object value, Attribute[] attributes)
             {
                 ArrayList properties = new ArrayList();
@@ -137,6 +142,11 @@ namespace RedCarpet
 
         public class ArrayNodeConverter : System.ComponentModel.TypeConverter
         {
+            public override object ConvertTo(System.ComponentModel.ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value, Type destinationType)
+            {
+                return "<Array node>";
+            }
+
             public override bool GetPropertiesSupported(ITypeDescriptorContext context)
             {
                 return true;

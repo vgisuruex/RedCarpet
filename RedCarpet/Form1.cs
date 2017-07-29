@@ -31,9 +31,10 @@ namespace RedCarpet
     public partial class Form1 : Form
     {
         private SmShaderProgram shaderProgram;
-        private SmCamera camera = new SmCamera();
-        private Dictionary<string, SmModel> modelDict = new Dictionary<string, SmModel>();
-        private Matrix4 projectionMatrix;
+        public SmCamera camera = new SmCamera();
+        public Dictionary<string, SmModel> modelDict = new Dictionary<string, SmModel>();
+        private List<string> InvalidNames = new List<string>(); //Models not found, avoid searching multiple times the same models
+        public Matrix4 projectionMatrix;
 
         private Point FormCenter
         {
@@ -79,7 +80,7 @@ namespace RedCarpet
         string loadedBymlFileName = ""; //inside the sarc
         Dictionary<string, dynamic> LoadedByml = null;
 
-        private int LevelHighestId = 0;       
+        public int LevelHighestId = 0;       
 
         public Form1()
         {
@@ -178,31 +179,45 @@ namespace RedCarpet
             {
                 MapObject Tmp_mpobj = new Object.MapObject(objs[i]);
                 int ID = int.Parse(Tmp_mpobj.objectID.Remove(0, 3));
-                if (ID > LevelHighestId) LevelHighestId = ID;
+                if (ID > LevelHighestId) LevelHighestId = ID;               
 
-                // Load the model
-                SmModel model;
-                if (Tmp_mpobj.modelName != null && !Tmp_mpobj.Equals(""))
-                {
-                    model = LoadModel(Tmp_mpobj.modelName);
-                }
-                else
-                {
-                    model = LoadModel(Tmp_mpobj.unitConfigName);
-                }
-
-                // Set the object's bounding box if one is found
-                if (model != null)
-                {
-                    Tmp_mpobj.boundingBox = model.boundingBox;
-                }
+                LoadModelToObj(Tmp_mpobj);
 
                 loadedMap.mobjs[section].Add(Tmp_mpobj);
             }
         }
 
+        private void LoadModelToObj(MapObject obj)
+        {
+            if (obj.unitConfigName == "RouteDokan" || obj.unitConfigName == "RouteDokanLauncher")//Load clear pipes pieces
+            {
+                foreach (dynamic tmp in obj.AllProperties["Links"]["Parts"])
+                {
+                    LoadModel(tmp["ModelName"]);
+                }
+            }
+
+            // Load the model
+            SmModel model;
+            if (obj.modelName != null && !obj.Equals(""))
+            {
+                model = LoadModel(obj.modelName);
+            }
+            else
+            {
+                model = LoadModel(obj.unitConfigName);
+            }
+
+            // Set the object's bounding box if one is found
+            if (model != null)
+            {
+                obj.boundingBox = model.boundingBox;
+            }
+        }
+
         private SmModel LoadModel(string modelName)
         {
+            if (InvalidNames.Contains(modelName)) return null;
             // todo: don't hardcode
             string modelPath = Properties.Settings.Default.GamePath + @"ObjectData\";
             string stagePath = Properties.Settings.Default.GamePath + @"stageModel\";
@@ -227,6 +242,7 @@ namespace RedCarpet
             }
 
             Console.WriteLine("WARN: Could not load a model for " + modelName);
+            InvalidNames.Add(modelName);
             return null;
         }
         
@@ -355,32 +371,21 @@ namespace RedCarpet
             glControl1.SwapBuffers();
         }
 
-        private void RenderMapObject(MapObject mapObject, bool selected, int modelLocation, int colorLocation) //TODO: add scale and rotation
+        private void RenderModel(SmModel model, Vector3 position, Vector3 rotation, Vector3 scale, bool selected, int modelLocation, int colorLocation)
         {
-            // Try to get the model via the UnitConfigName or ModelName
-            SmModel model;
-            if (!modelDict.TryGetValue(mapObject.unitConfigName, out model))
-            {
-                if (mapObject.modelName == null || !modelDict.TryGetValue(mapObject.modelName, out model))
-                {
-                    // Give up
-                    return;
-                }
-            }
-
             // Get the position and rotation of the object
-            Matrix4 positionMat = Matrix4.CreateTranslation(mapObject.position);
-            Matrix4 rotXMat = Matrix4.CreateRotationX(MathHelper.DegreesToRadians(mapObject.rotation.X));
-            Matrix4 rotYMat = Matrix4.CreateRotationY(MathHelper.DegreesToRadians(mapObject.rotation.Y));
-            Matrix4 rotZMat = Matrix4.CreateRotationZ(MathHelper.DegreesToRadians(mapObject.rotation.Z));
-            Matrix4 scaleMat = Matrix4.CreateScale(mapObject.scale);
+            Matrix4 positionMat = Matrix4.CreateTranslation(position);
+            Matrix4 rotXMat = Matrix4.CreateRotationX(MathHelper.DegreesToRadians(rotation.X));
+            Matrix4 rotYMat = Matrix4.CreateRotationY(MathHelper.DegreesToRadians(rotation.Y));
+            Matrix4 rotZMat = Matrix4.CreateRotationZ(MathHelper.DegreesToRadians(rotation.Z));
+            Matrix4 scaleMat = Matrix4.CreateScale(scale);
             Matrix4 finalMat = scaleMat * (rotXMat * rotYMat * rotZMat) * positionMat;
 
             // Set the position in the shader
             GL.UniformMatrix4(modelLocation, false, ref finalMat);
 
             // Render filled triangles
-            GL.Uniform4(colorLocation, mapObject.unitConfigName.Equals("stageObject") ? whiteColor : whiteColor);
+            GL.Uniform4(colorLocation, whiteColor);
             GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill);
             GL.Enable(EnableCap.PolygonOffsetFill);
             GL.PolygonOffset(1, 1);
@@ -410,6 +415,28 @@ namespace RedCarpet
             GL.LineWidth(1.0f);
         }
 
+        private void RenderMapObject(MapObject mapObject, bool selected, int modelLocation, int colorLocation) 
+        {
+            if (mapObject.RequiresCustomRendering)
+                mapObject.Render(
+                    (SmModel model, Vector3 pos,Vector3 rot, Vector3 scale, bool sel) => 
+                        RenderModel(model, pos, rot, scale, sel && selected, modelLocation, colorLocation));
+            else
+            {
+                // Try to get the model via the UnitConfigName or ModelName
+                SmModel model;
+                if (!modelDict.TryGetValue(mapObject.unitConfigName, out model))
+                {
+                    if (mapObject.modelName == null || !modelDict.TryGetValue(mapObject.modelName, out model))
+                    {
+                        // Give up
+                        return;
+                    }
+                }
+                RenderModel(model, mapObject.position, mapObject.rotation, mapObject.scale, selected, modelLocation, colorLocation);
+            }
+        }
+
         private void glControl1_MouseMove(object sender, MouseEventArgs e)
         {
             if (loadedMap == null || LoadedByml == null) return;
@@ -426,8 +453,7 @@ namespace RedCarpet
 
                 glControl1.Invalidate();
             }
-
-            if (e.Button == MouseButtons.Left)
+            else if (e.Button == MouseButtons.Left)
             {
                 Point relMouse = glControl1.PointToClient(Cursor.Position);
                 if (MouseAxis == 0)
@@ -462,7 +488,7 @@ namespace RedCarpet
                         MouseAxis = 2;
                     }
                 }
-                else if (SelectedIndex != -1)
+                if (SelectedIndex != -1)
                 {
                     float dif = 0.0f;
                     switch (Math.Abs(MouseAxis))
@@ -474,15 +500,20 @@ namespace RedCarpet
                             dif = MouseLast.Y - relMouse.Y;
                             break;
                     }
-                    Vector3 old = SelectedSection[SelectedIndex].position;
-                    old += MoveDir * dif / 24;
-                    SelectedSection[SelectedIndex].position = old;
+                    if (SelectedSection[SelectedIndex].RequiresCustomRendering)
+                        SelectedSection[SelectedIndex].Drag(MoveDir * dif / 24,e.X,e.Y);
+                    else
+                        SelectedSection[SelectedIndex].position += MoveDir * dif / 24;
                 }
                 glControl1.Invalidate();
             }
             else
             {
-                MouseAxis = 0;
+                if (MouseAxis != 0)
+                {
+                    MouseAxis = 0;
+                    if (SelectedIndex > 0 && SelectedSection[SelectedIndex].RequiresCustomRendering) SelectedSection[SelectedIndex].StopDragging();
+                }
             }
 
             prevMouseX = e.X;
@@ -502,11 +533,13 @@ namespace RedCarpet
             if (loadedMap == null || loadedMap.mobjs == null) return;
             if (e.Button == MouseButtons.Left)
             {
+
                 Point mousePos = MouseLast = MouseStart = glControl1.PointToClient(Cursor.Position);
 
                 int iY = glControl1.Height - e.Y;
                 var obj = camera.castRay(e.X, e.Y, glControl1.Width, glControl1.Height, projectionMatrix, loadedMap.mobjs);
                 if (obj == null) return;
+                if (SelectedIndex > 0 && SelectedSection[SelectedIndex].RequiresCustomRendering) SelectedSection[SelectedIndex].StopDragging();
                 SectionSelect.Text = obj.Item1;
                 selectObject(obj.Item2);
             }
@@ -521,15 +554,20 @@ namespace RedCarpet
 
         private void objectsList_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (SelectedIndex == -1) propertyGrid1.SelectedObject = null;
-            else propertyGrid1.SelectedObject = SelectedSection[SelectedIndex];
+            propertyGrid1.SelectedObject = null;
+            if (SelectedIndex != -1)
+                 propertyGrid1.SelectedObject = SelectedSection[SelectedIndex];
         }
 
         private void propertyValueChanged(object s, PropertyValueChangedEventArgs e)
         {
-            glControl1_Paint(null,null);
-        }
-       
+            if (e.ChangedItem.Label == "unitConfigName" || e.ChangedItem.Label == "modelName") LoadModelToObj(SelectedSection[SelectedIndex]);
+
+            if (objectsList.Items[SelectedIndex].ToString() != SelectedSection[SelectedIndex].unitConfigName)
+                objectsList.Items[SelectedIndex] = SelectedSection[SelectedIndex].unitConfigName;
+
+            glControl1_Paint(null, null);
+        }       
 
         private void bymlViewerToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -573,24 +611,7 @@ namespace RedCarpet
         private void btn_openBymlView_Click(object sender, EventArgs e)
         {
             if (LoadedByml is Dictionary<string, dynamic>) new ByamlViewer(LoadedByml).Show(); else throw new Exception("Not supported");
-        }
-
-        private void actorToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            // TO DO
-            
-            /* IList<dynamic> objectList = LoadedByml["Objs"];
-            Dictionary<string, dynamic> test = new Dictionary<string, dynamic>();
-            test.Add("CollisionCheckDist", 300);
-            test.Add("Comment", null);
-            test.Add("Id", "f0xCoin");
-            test.Add("IsConnectToCollision", false);
-            test.Add("IsDropShadowActorDown", false);
-            test.Add("IsLinkDest", false);
-            test.Add("IsPlacementInRouteDokan", false);
-            test.Add("LayerConfigName", "Common");
-            objectList.Add(test); */
-        }
+        }        
 
         private void SectionSelect_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -688,6 +709,16 @@ namespace RedCarpet
             loadedMap.mobjs[section].RemoveAt(index);
             if (SelectedSection == loadedMap.mobjs[section]) objectsList.Items.RemoveAt(index);
             glControl1.Invalidate();
+        }
+
+        private void actorToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            AddObject(new MapObject(MapObject.MakeNewObject()), SelectedSectionName);
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }

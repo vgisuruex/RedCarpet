@@ -36,6 +36,8 @@
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.bymlViewerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.closeCurrentLevelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.changeGameFolderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.createToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.actorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.label1 = new System.Windows.Forms.Label();
@@ -46,11 +48,10 @@
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.SectionSelect = new System.Windows.Forms.ComboBox();
             this.btn_openBymlView = new System.Windows.Forms.Button();
-            this.splitContainer2 = new System.Windows.Forms.SplitContainer();
-            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-            this.changeGameFolderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.btn_duplicate = new System.Windows.Forms.Button();
             this.btn_del = new System.Windows.Forms.Button();
+            this.btn_duplicate = new System.Windows.Forms.Button();
+            this.splitContainer2 = new System.Windows.Forms.SplitContainer();
+            this.button1 = new System.Windows.Forms.Button();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -128,6 +129,18 @@
             this.closeCurrentLevelToolStripMenuItem.Text = "Close current level";
             this.closeCurrentLevelToolStripMenuItem.Click += new System.EventHandler(this.closeCurrentLevelToolStripMenuItem_Click);
             // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(179, 6);
+            // 
+            // changeGameFolderToolStripMenuItem
+            // 
+            this.changeGameFolderToolStripMenuItem.Name = "changeGameFolderToolStripMenuItem";
+            this.changeGameFolderToolStripMenuItem.Size = new System.Drawing.Size(182, 22);
+            this.changeGameFolderToolStripMenuItem.Text = "Change game folder";
+            this.changeGameFolderToolStripMenuItem.Click += new System.EventHandler(this.changeGameFolderToolStripMenuItem_Click);
+            // 
             // createToolStripMenuItem
             // 
             this.createToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -170,7 +183,7 @@
             this.objectsList.FormattingEnabled = true;
             this.objectsList.Location = new System.Drawing.Point(5, 29);
             this.objectsList.Name = "objectsList";
-            this.objectsList.Size = new System.Drawing.Size(136, 355);
+            this.objectsList.Size = new System.Drawing.Size(136, 303);
             this.objectsList.TabIndex = 11;
             this.objectsList.SelectedIndexChanged += new System.EventHandler(this.objectsList_SelectedIndexChanged);
             this.objectsList.DoubleClick += new System.EventHandler(this.objectsList_doubleClick);
@@ -201,7 +214,7 @@
             this.propertyGrid1.LineColor = System.Drawing.SystemColors.ControlDark;
             this.propertyGrid1.Location = new System.Drawing.Point(3, 49);
             this.propertyGrid1.Name = "propertyGrid1";
-            this.propertyGrid1.Size = new System.Drawing.Size(156, 309);
+            this.propertyGrid1.Size = new System.Drawing.Size(156, 346);
             this.propertyGrid1.TabIndex = 12;
             this.propertyGrid1.PropertyValueChanged += new System.Windows.Forms.PropertyValueChangedEventHandler(this.propertyValueChanged);
             // 
@@ -217,15 +230,16 @@
             // splitContainer1.Panel1
             // 
             this.splitContainer1.Panel1.BackColor = System.Drawing.SystemColors.Control;
+            this.splitContainer1.Panel1.Controls.Add(this.btn_del);
             this.splitContainer1.Panel1.Controls.Add(this.SectionSelect);
+            this.splitContainer1.Panel1.Controls.Add(this.btn_duplicate);
             this.splitContainer1.Panel1.Controls.Add(this.btn_openBymlView);
             this.splitContainer1.Panel1.Controls.Add(this.objectsList);
             // 
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.BackColor = System.Drawing.SystemColors.Control;
-            this.splitContainer1.Panel2.Controls.Add(this.btn_del);
-            this.splitContainer1.Panel2.Controls.Add(this.btn_duplicate);
+            this.splitContainer1.Panel2.Controls.Add(this.button1);
             this.splitContainer1.Panel2.Controls.Add(this.cpath);
             this.splitContainer1.Panel2.Controls.Add(this.propertyGrid1);
             this.splitContainer1.Panel2.Controls.Add(this.label1);
@@ -258,6 +272,30 @@
             this.btn_openBymlView.UseVisualStyleBackColor = true;
             this.btn_openBymlView.Click += new System.EventHandler(this.btn_openBymlView_Click);
             // 
+            // btn_del
+            // 
+            this.btn_del.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.btn_del.Location = new System.Drawing.Point(5, 364);
+            this.btn_del.Name = "btn_del";
+            this.btn_del.Size = new System.Drawing.Size(136, 23);
+            this.btn_del.TabIndex = 14;
+            this.btn_del.Text = "Delete object";
+            this.btn_del.UseVisualStyleBackColor = true;
+            this.btn_del.Click += new System.EventHandler(this.btn_del_Click);
+            // 
+            // btn_duplicate
+            // 
+            this.btn_duplicate.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.btn_duplicate.Location = new System.Drawing.Point(5, 338);
+            this.btn_duplicate.Name = "btn_duplicate";
+            this.btn_duplicate.Size = new System.Drawing.Size(136, 23);
+            this.btn_duplicate.TabIndex = 13;
+            this.btn_duplicate.Text = "Duplicate object";
+            this.btn_duplicate.UseVisualStyleBackColor = true;
+            this.btn_duplicate.Click += new System.EventHandler(this.btn_duplicate_Click);
+            // 
             // splitContainer2
             // 
             this.splitContainer2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -280,41 +318,16 @@
             this.splitContainer2.SplitterDistance = 616;
             this.splitContainer2.TabIndex = 14;
             // 
-            // toolStripSeparator2
+            // button1
             // 
-            this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(179, 6);
-            // 
-            // changeGameFolderToolStripMenuItem
-            // 
-            this.changeGameFolderToolStripMenuItem.Name = "changeGameFolderToolStripMenuItem";
-            this.changeGameFolderToolStripMenuItem.Size = new System.Drawing.Size(182, 22);
-            this.changeGameFolderToolStripMenuItem.Text = "Change game folder";
-            this.changeGameFolderToolStripMenuItem.Click += new System.EventHandler(this.changeGameFolderToolStripMenuItem_Click);
-            // 
-            // btn_duplicate
-            // 
-            this.btn_duplicate.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.btn_duplicate.Location = new System.Drawing.Point(3, 364);
-            this.btn_duplicate.Name = "btn_duplicate";
-            this.btn_duplicate.Size = new System.Drawing.Size(156, 23);
-            this.btn_duplicate.TabIndex = 13;
-            this.btn_duplicate.Text = "Duplicate object";
-            this.btn_duplicate.UseVisualStyleBackColor = true;
-            this.btn_duplicate.Click += new System.EventHandler(this.btn_duplicate_Click);
-            // 
-            // btn_del
-            // 
-            this.btn_del.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.btn_del.Location = new System.Drawing.Point(3, 391);
-            this.btn_del.Name = "btn_del";
-            this.btn_del.Size = new System.Drawing.Size(156, 23);
-            this.btn_del.TabIndex = 14;
-            this.btn_del.Text = "Delete object";
-            this.btn_del.UseVisualStyleBackColor = true;
-            this.btn_del.Click += new System.EventHandler(this.btn_del_Click);
+            this.button1.Location = new System.Drawing.Point(3, 397);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(156, 23);
+            this.button1.TabIndex = 13;
+            this.button1.Text = "Edit links (TODO)";
+            this.button1.UseVisualStyleBackColor = true;
             // 
             // Form1
             // 
@@ -326,6 +339,7 @@
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "Form1";
             this.Text = "RedCarpet";
+            this.Load += new System.EventHandler(this.Form1_Load);
             this.Shown += new System.EventHandler(this.Form1_shown);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
@@ -348,7 +362,7 @@
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox cpath;
-        private OpenTK.GLControl glControl1;
+        public OpenTK.GLControl glControl1;
         private System.Windows.Forms.ListBox objectsList;
         private System.Windows.Forms.ToolStripMenuItem bymlViewerToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem openLevelToolStripMenuItem;
@@ -367,6 +381,7 @@
         private System.Windows.Forms.ToolStripMenuItem changeGameFolderToolStripMenuItem;
         private System.Windows.Forms.Button btn_del;
         private System.Windows.Forms.Button btn_duplicate;
+        private System.Windows.Forms.Button button1;
     }
 }
 
