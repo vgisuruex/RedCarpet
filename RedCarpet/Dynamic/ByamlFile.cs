@@ -103,7 +103,6 @@ namespace Syroot.NintenTools.Byaml.Dynamic
             ByamlFile byamlFile = new ByamlFile(supportPaths, byteOrder);
             byamlFile.Write(stream, root);
         }
-
         // ---- Helper methods ----
 
         /// <summary>
@@ -161,7 +160,7 @@ namespace Syroot.NintenTools.Byaml.Dynamic
                 reader.ByteOrder = _byteOrder;
 
                 // Load the header, specifying magic bytes ("BY"), version and main node offsets.
-                if (reader.ReadUInt16() != _magicBytes) throw new ByamlException("Invalid BYAML header.");
+                 if (reader.ReadUInt16() != _magicBytes) throw new ByamlException("Invalid BYAML header.");
                 if (reader.ReadUInt16() != 0x0001) throw new ByamlException("Unsupported BYAML version.");
                 uint nameArrayOffset = reader.ReadUInt32();
                 uint stringArrayOffset = reader.ReadUInt32();

@@ -18,7 +18,7 @@ namespace RedCarpet
 
         public class MapObject : ICloneable
         {
-            static void Vector3ToValues(Vector3 vec,dynamic obj)
+            static void Vector3ToValues(Vector3 vec, dynamic obj)
             {
                 obj["X"] = vec.X;
                 obj["Y"] = vec.Y;
@@ -40,7 +40,7 @@ namespace RedCarpet
                 obj.Add("Links", new Dictionary<string, dynamic>());
                 obj.Add("ModelName", null);
                 obj.Add("Rotate", MakeVector3Value());
-                obj.Add("Scale", MakeVector3Value(1,1,1));
+                obj.Add("Scale", MakeVector3Value(1, 1, 1));
                 obj.Add("Translate", MakeVector3Value());
                 obj.Add("UnitConfigName", "newObject");
                 return obj;
@@ -111,6 +111,12 @@ namespace RedCarpet
             {
                 get { return _bymlNode["UnitConfigName"]; }
                 set { _bymlNode["UnitConfigName"] = value; }
+            }
+            [Category("Common properties")]
+            public Dictionary<string,dynamic> Links
+            {
+                get { return AllProperties["Links"]; }
+                set { AllProperties["Links"] = value; }
             }
 
             [Category("Common properties")]
