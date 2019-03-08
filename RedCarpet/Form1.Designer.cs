@@ -44,10 +44,12 @@
             this.actionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.undoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.redoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.debugTestToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.SectionSelect = new System.Windows.Forms.ComboBox();
             this.objectsList = new System.Windows.Forms.ListBox();
+            this.textBox4 = new System.Windows.Forms.TextBox();
+            this.textBox3 = new System.Windows.Forms.TextBox();
+            this.textBox2 = new System.Windows.Forms.TextBox();
             this.cpath = new System.Windows.Forms.TextBox();
             this.propertyGrid1 = new System.Windows.Forms.PropertyGrid();
             this.label1 = new System.Windows.Forms.Label();
@@ -71,7 +73,8 @@
             this.Prev = new System.Windows.Forms.Button();
             this.ToolContainer = new System.Windows.Forms.GroupBox();
             this.textBox1 = new System.Windows.Forms.TextBox();
-            this.debugGetValueToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.objectFilesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.objectFileManagerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -90,8 +93,7 @@
             this.fileToolStripMenuItem,
             this.createToolStripMenuItem,
             this.actionsToolStripMenuItem,
-            this.debugTestToolStripMenuItem,
-            this.debugGetValueToolStripMenuItem});
+            this.objectFilesToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(1032, 24);
@@ -194,28 +196,21 @@
             this.undoToolStripMenuItem,
             this.redoToolStripMenuItem});
             this.actionsToolStripMenuItem.Name = "actionsToolStripMenuItem";
-            this.actionsToolStripMenuItem.Size = new System.Drawing.Size(68, 20);
-            this.actionsToolStripMenuItem.Text = "Actions...";
+            this.actionsToolStripMenuItem.Size = new System.Drawing.Size(59, 20);
+            this.actionsToolStripMenuItem.Text = "Actions";
             // 
             // undoToolStripMenuItem
             // 
             this.undoToolStripMenuItem.Name = "undoToolStripMenuItem";
-            this.undoToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
+            this.undoToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.undoToolStripMenuItem.Text = "Undo";
             this.undoToolStripMenuItem.Click += new System.EventHandler(this.undoToolStripMenuItem_Click);
             // 
             // redoToolStripMenuItem
             // 
             this.redoToolStripMenuItem.Name = "redoToolStripMenuItem";
-            this.redoToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
+            this.redoToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.redoToolStripMenuItem.Text = "Redo";
-            // 
-            // debugTestToolStripMenuItem
-            // 
-            this.debugTestToolStripMenuItem.Name = "debugTestToolStripMenuItem";
-            this.debugTestToolStripMenuItem.Size = new System.Drawing.Size(75, 20);
-            this.debugTestToolStripMenuItem.Text = "DebugTest";
-            this.debugTestToolStripMenuItem.Click += new System.EventHandler(this.debugTestToolStripMenuItem_Click);
             // 
             // splitContainer1
             // 
@@ -235,6 +230,9 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.BackColor = System.Drawing.SystemColors.Control;
+            this.splitContainer1.Panel2.Controls.Add(this.textBox4);
+            this.splitContainer1.Panel2.Controls.Add(this.textBox3);
+            this.splitContainer1.Panel2.Controls.Add(this.textBox2);
             this.splitContainer1.Panel2.Controls.Add(this.cpath);
             this.splitContainer1.Panel2.Controls.Add(this.propertyGrid1);
             this.splitContainer1.Panel2.Controls.Add(this.label1);
@@ -266,6 +264,27 @@
             this.objectsList.TabIndex = 11;
             this.objectsList.SelectedIndexChanged += new System.EventHandler(this.objectsList_SelectedIndexChanged);
             this.objectsList.DoubleClick += new System.EventHandler(this.objectsList_doubleClick);
+            // 
+            // textBox4
+            // 
+            this.textBox4.Location = new System.Drawing.Point(9, 417);
+            this.textBox4.Name = "textBox4";
+            this.textBox4.Size = new System.Drawing.Size(100, 20);
+            this.textBox4.TabIndex = 15;
+            // 
+            // textBox3
+            // 
+            this.textBox3.Location = new System.Drawing.Point(9, 399);
+            this.textBox3.Name = "textBox3";
+            this.textBox3.Size = new System.Drawing.Size(100, 20);
+            this.textBox3.TabIndex = 14;
+            // 
+            // textBox2
+            // 
+            this.textBox2.Location = new System.Drawing.Point(4, 376);
+            this.textBox2.Name = "textBox2";
+            this.textBox2.Size = new System.Drawing.Size(100, 20);
+            this.textBox2.TabIndex = 13;
             // 
             // cpath
             // 
@@ -522,12 +541,20 @@
             this.textBox1.Size = new System.Drawing.Size(118, 20);
             this.textBox1.TabIndex = 21;
             // 
-            // debugGetValueToolStripMenuItem
+            // objectFilesToolStripMenuItem
             // 
-            this.debugGetValueToolStripMenuItem.Name = "debugGetValueToolStripMenuItem";
-            this.debugGetValueToolStripMenuItem.Size = new System.Drawing.Size(100, 20);
-            this.debugGetValueToolStripMenuItem.Text = "DebugGetValue";
-            this.debugGetValueToolStripMenuItem.Click += new System.EventHandler(this.debugGetValueToolStripMenuItem_Click);
+            this.objectFilesToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.objectFileManagerToolStripMenuItem});
+            this.objectFilesToolStripMenuItem.Name = "objectFilesToolStripMenuItem";
+            this.objectFilesToolStripMenuItem.Size = new System.Drawing.Size(80, 20);
+            this.objectFilesToolStripMenuItem.Text = "Object Files";
+            // 
+            // objectFileManagerToolStripMenuItem
+            // 
+            this.objectFileManagerToolStripMenuItem.Name = "objectFileManagerToolStripMenuItem";
+            this.objectFileManagerToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.objectFileManagerToolStripMenuItem.Text = "Object File Manager";
+            this.objectFileManagerToolStripMenuItem.Click += new System.EventHandler(this.objectFileManagerToolStripMenuItem_Click);
             // 
             // Form1
             // 
@@ -577,7 +604,6 @@
         private System.Windows.Forms.ToolStripMenuItem actionsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem undoToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem redoToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem debugTestToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem testCreateActorToolStripMenuItem;
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.ComboBox SectionSelect;
@@ -605,7 +631,11 @@
         private System.Windows.Forms.Button Prev;
         private System.Windows.Forms.GroupBox ToolContainer;
         private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.ToolStripMenuItem debugGetValueToolStripMenuItem;
+        private System.Windows.Forms.TextBox textBox4;
+        private System.Windows.Forms.TextBox textBox3;
+        private System.Windows.Forms.TextBox textBox2;
+        private System.Windows.Forms.ToolStripMenuItem objectFilesToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem objectFileManagerToolStripMenuItem;
     }
 }
 

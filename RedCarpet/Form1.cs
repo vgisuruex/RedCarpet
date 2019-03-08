@@ -84,32 +84,85 @@ namespace RedCarpet
 
         //-------------------------------------------- Undo And Redo Variables --------------------------------------------
 
-        bool StopUndo;
-        bool StopRedo;
-        int UndoInt = 0;
-        int RedoInt = 0;
-        string Undo = null;
-        string Redo = null;
-        GridItem UndoShareItem = null;
-        string UndoSharePropertyName = null;
-        GridItem RedoShareItem = null;
-        string RedoSharePropertyName = null;
-        object UndoObject = null;
-        object RedoObject = null;
-        int UndoInt2;
-        int RedoInt2;
-        bool UndoBool;
-        bool RedoBool;
-        Vector3 UndoVector;
-        Vector3 RedoVector;
-        bool UndoBool2;
-        bool RedoBool2;
-        bool UndoBool3;
-        bool RedoBool3;
-        MapObject UndoMapObject;
-        MapObject RedoMapObject;
-        string UndoString;
-        string RedoString;
+        private bool DoClearUndoAct3 = false;
+        private bool StopUndo;
+        private bool StopRedo;
+        private int UndoInt = 0;
+        private int RedoInt = 0;
+        private string Undo = null;
+        private string Redo = null;
+        private GridItem UndoShareItem = null;
+        private string UndoSharePropertyName = null;
+        private GridItem RedoShareItem = null;
+        private string RedoSharePropertyName = null;
+        private object UndoObject = null;
+        private object RedoObject = null;
+        private int UndoInt2;
+        private int RedoInt2;
+        private bool UndoBool;
+        private bool RedoBool;
+        private Vector3 UndoVector;
+        private Vector3 RedoVector;
+        private bool UndoBool2;
+        private bool RedoBool2;
+        private bool UndoBool3;
+        private bool RedoBool3;
+        private RedCarpet.Object.MapObject UndoMapObject;
+        private RedCarpet.Object.MapObject RedoMapObject;
+        private string UndoString;
+        private string RedoString;
+        private bool StopUndo2;
+        private bool StopRedo2;
+        private int UndoInt21 = 0;
+        private int RedoInt21 = 0;
+        private string Undo2 = null;
+        private string Redo2 = null;
+        private GridItem UndoShareItem2 = null;
+        private string UndoSharePropertyName2 = null;
+        private GridItem RedoShareItem2 = null;
+        private string RedoSharePropertyName2 = null;
+        private object UndoObject2 = null;
+        private object RedoObject2 = null;
+        private int UndoInt22;
+        private int RedoInt22;
+        private bool UndoBool21;
+        private bool RedoBool21;
+        private Vector3 UndoVector2;
+        private Vector3 RedoVector2;
+        private bool UndoBool22;
+        private bool RedoBool22;
+        private bool UndoBool23;
+        private bool RedoBool23;
+        private RedCarpet.Object.MapObject UndoMapObject2;
+        private RedCarpet.Object.MapObject RedoMapObject2;
+        private string UndoString2;
+        private string RedoString2;
+        private bool StopUndo3;
+        private bool StopRedo3;
+        private int UndoInt31 = 0;
+        private int RedoInt31 = 0;
+        private string Undo3 = null;
+        private string Redo3 = null;
+        private GridItem UndoShareItem3 = null;
+        private string UndoSharePropertyName3 = null;
+        private GridItem RedoShareItem3 = null;
+        private string RedoSharePropertyName3 = null;
+        private object UndoObject3 = null;
+        private object RedoObject3 = null;
+        private int UndoInt32;
+        private int RedoInt32;
+        private bool UndoBool31;
+        private bool RedoBool31;
+        private Vector3 UndoVector3;
+        private Vector3 RedoVector3;
+        private bool UndoBool32;
+        private bool RedoBool32;
+        private bool UndoBool33;
+        private bool RedoBool33;
+        private RedCarpet.Object.MapObject UndoMapObject3;
+        private RedCarpet.Object.MapObject RedoMapObject3;
+        private string UndoString3;
+        private string RedoString3;
         //Need to use different bools in order to make the undo work correctly.
 
         //-----------------------------------------------------------------------------------------------------------------
@@ -473,110 +526,112 @@ namespace RedCarpet
 
         private void glControl1_MouseMove(object sender, MouseEventArgs e)
         {
-            if (loadedMap == null || LoadedByml == null) return;
-            // OpenGL's Y-origin starts at the bottom left, unlike WinForms
-            int newY = glControl1.Height - e.Y;
-
-            if (e.Button == MouseButtons.Right)
+            if (!((this.loadedMap == null) || ReferenceEquals(this.LoadedByml, null)))
             {
-                float deltaX = ((float)e.X - (float)prevMouseX) / 100;
-                float deltaY = ((float)newY - (float)prevMouseY) / 100;
-
-                camera.yaw += deltaX;
-                camera.pitch += deltaY;
-
-                glControl1.Invalidate();
-            }
-            else if (e.Button == MouseButtons.Left)
-            {
-                if (UndoBool2 == false)
+                int num = this.glControl1.Height - e.Y;
+                if (e.Button == MouseButtons.Right)
                 {
-                    if (SelectedIndex != -1)
+                    float num2 = (e.X - this.prevMouseX) / 100f;
+                    float num3 = (num - this.prevMouseY) / 100f;
+                    this.camera.yaw += num2;
+                    this.camera.pitch += num3;
+                    this.glControl1.Invalidate();
+                }
+                else if (e.Button == MouseButtons.Left)
+                {
+                    if (!this.UndoBool2 && (this.SelectedIndex != -1))
                     {
-                        Undo = "ObjectMoveGl";
-                        UndoInt = SelectedIndex;
-                        UndoVector = SelectedSection[SelectedIndex].position;
-                        UndoBool2 = true;
+                        this.PassUndoBackward();
+                        this.Undo = "ObjectMoveGl";
+                        this.UndoInt = this.SelectedIndex;
+                        this.UndoVector = this.SelectedSection[this.SelectedIndex].position;
+                        this.UndoBool2 = true;
+                    }
+                    this.UndoBool3 = true;
+                    Point point = this.glControl1.PointToClient(Cursor.Position);
+                    if (this.MouseAxis == 0)
+                    {
+                        Vector3 vector = new Vector3(0f, 0f, 0f);
+                        if (Math.Abs((int)(this.MouseStart.X - point.X)) > 0x2d)
+                        {
+                            Vector3 vector2 = new Vector3((float)(Math.Cos(this.camera.yaw + 1.5707963267948966) * ((float)Math.Cos((double)this.camera.pitch))), (float)Math.Sin((double)this.camera.pitch), (float)(Math.Sin(this.camera.yaw + 1.5707963267948966) * ((float)Math.Cos((double)this.camera.pitch))));
+                            if ((Math.Abs(vector2.X) > Math.Abs(vector2.Y)) && (Math.Abs(vector2.X) > Math.Abs(vector2.Z)))
+                            {
+                                this.MoveDir = (vector2.X <= 0f) ? Vector3.UnitX : -Vector3.UnitX;
+                            }
+                            else if ((Math.Abs(vector2.Y) > Math.Abs(vector2.X)) && (Math.Abs(vector2.Y) > Math.Abs(vector2.Z)))
+                            {
+                                this.MoveDir = (vector2.Y <= 0f) ? Vector3.UnitY : -Vector3.UnitY;
+                            }
+                            else if ((Math.Abs(vector2.Z) > Math.Abs(vector2.Y)) && (Math.Abs(vector2.Z) > Math.Abs(vector2.X)))
+                            {
+                                this.MoveDir = (vector2.Z <= 0f) ? Vector3.UnitZ : -Vector3.UnitZ;
+                            }
+                            this.MouseAxis = 1;
+                        }
+                        else if (Math.Abs((int)(this.MouseStart.Y - point.Y)) > 0x2d)
+                        {
+                            Vector3 vector3 = new Vector3((float)(Math.Cos((double)this.camera.yaw) * ((float)Math.Cos(this.camera.pitch - 1.5707963267948966))), (float)Math.Sin(this.camera.pitch + 1.5707963267948966), (float)(Math.Sin((double)this.camera.yaw) * ((float)Math.Cos(this.camera.pitch + 1.5707963267948966))));
+                            if ((Math.Abs(vector3.X) > Math.Abs(vector3.Y)) && (Math.Abs(vector3.X) > Math.Abs(vector3.Z)))
+                            {
+                                this.MoveDir = (vector3.X <= 0f) ? Vector3.UnitX : -Vector3.UnitX;
+                            }
+                            else if ((Math.Abs(vector3.Y) > Math.Abs(vector3.X)) && (Math.Abs(vector3.Y) > Math.Abs(vector3.Z)))
+                            {
+                                this.MoveDir = (vector3.Y <= 0f) ? -Vector3.UnitY : Vector3.UnitY;
+                            }
+                            else if ((Math.Abs(vector3.Z) > Math.Abs(vector3.Y)) && (Math.Abs(vector3.Z) > Math.Abs(vector3.X)))
+                            {
+                                this.MoveDir = (vector3.Z <= 0f) ? -Vector3.UnitZ : Vector3.UnitZ;
+                            }
+                            this.MouseAxis = 2;
+                        }
+                    }
+                    if (this.SelectedIndex != -1)
+                    {
+                        float num4 = 0f;
+                        int num5 = Math.Abs(this.MouseAxis);
+                        if (num5 == 1)
+                        {
+                            num4 = this.MouseLast.X - point.X;
+                        }
+                        else if (num5 == 2)
+                        {
+                            num4 = this.MouseLast.Y - point.Y;
+                        }
+                        if (this.SelectedSection[this.SelectedIndex].RequiresCustomRendering)
+                        {
+                            this.SelectedSection[this.SelectedIndex].Drag((this.MoveDir * num4) / 24f, e.X, e.Y);
+                        }
+                        else
+                        {
+                            RedCarpet.Object.MapObject local1 = this.SelectedSection[this.SelectedIndex];
+                            local1.position += (this.MoveDir * num4) / 24f;
+                        }
+                    }
+                    this.glControl1.Invalidate();
+                }
+                if (e.Button != MouseButtons.Left)
+                {
+                    if (this.UndoBool3)
+                    {
+                        this.UndoBool2 = false;
+                        this.UndoBool3 = false;
                     }
                 }
-                UndoBool3 = true; //Used to know if a object is moved using the gl. if not,
-                                  //the undo always think that the last undo move was moving the object cause
-                                  //the mouse move and no mouse click is always triggered and fired
-                Point relMouse = glControl1.PointToClient(Cursor.Position);
-                if (MouseAxis == 0)
+                else if (this.MouseAxis != 0)
                 {
-                    Vector3 unitm = new Vector3(0f, 0f, 0f);
-                    if (Math.Abs(MouseStart.X - relMouse.X) > 45)
+                    this.MouseAxis = 0;
+                    if ((this.SelectedIndex > 0) && this.SelectedSection[this.SelectedIndex].RequiresCustomRendering)
                     {
-                        Vector3 r = new Vector3((float)(Math.Cos(camera.yaw + Math.PI / 2f) * (float)Math.Cos(camera.pitch)), (float)Math.Sin(camera.pitch),
-                        (float)(Math.Sin(camera.yaw + Math.PI / 2f) * (float)Math.Cos(camera.pitch)));
-
-                        if (Math.Abs(r.X) > Math.Abs(r.Y) && Math.Abs(r.X) > Math.Abs(r.Z))
-                            if (r.X > 0) MoveDir = -Vector3.UnitX; else MoveDir = Vector3.UnitX;
-                        else if (Math.Abs(r.Y) > Math.Abs(r.X) && Math.Abs(r.Y) > Math.Abs(r.Z))
-                            if (r.Y > 0) MoveDir = -Vector3.UnitY; else MoveDir = Vector3.UnitY;
-                        else if (Math.Abs(r.Z) > Math.Abs(r.Y) && Math.Abs(r.Z) > Math.Abs(r.X))
-                            if (r.Z > 0) MoveDir = -Vector3.UnitZ; else MoveDir = Vector3.UnitZ;
-
-                        MouseAxis = 1;
-                    }
-                    else if (Math.Abs(MouseStart.Y - relMouse.Y) > 45)
-                    {
-                        Vector3 u = new Vector3((float)(Math.Cos(camera.yaw) * (float)Math.Cos(camera.pitch - Math.PI / 2f)), (float)Math.Sin(camera.pitch + Math.PI / 2f),
-                        (float)(Math.Sin(camera.yaw) * (float)Math.Cos(camera.pitch + Math.PI / 2f)));
-
-                        if (Math.Abs(u.X) > Math.Abs(u.Y) && Math.Abs(u.X) > Math.Abs(u.Z))
-                            if (u.X > 0) MoveDir = -Vector3.UnitX; else MoveDir = Vector3.UnitX;
-                        else if (Math.Abs(u.Y) > Math.Abs(u.X) && Math.Abs(u.Y) > Math.Abs(u.Z))
-                            if (u.Y > 0) MoveDir = Vector3.UnitY; else MoveDir = -Vector3.UnitY;
-                        else if (Math.Abs(u.Z) > Math.Abs(u.Y) && Math.Abs(u.Z) > Math.Abs(u.X))
-                            if (u.Z > 0) MoveDir = Vector3.UnitZ; else MoveDir = -Vector3.UnitZ;
-
-                        MouseAxis = 2;
+                        this.SelectedSection[this.SelectedIndex].StopDragging();
                     }
                 }
-
-                if (SelectedIndex != -1)
-                {
-                    float dif = 0.0f;
-                    switch (Math.Abs(MouseAxis))
-                    {
-                        case 1:
-                            dif = MouseLast.X - relMouse.X;
-                            break;
-                        case 2:
-                            dif = MouseLast.Y - relMouse.Y;
-                            break;
-                    }
-                    if (SelectedSection[SelectedIndex].RequiresCustomRendering)
-                        SelectedSection[SelectedIndex].Drag(MoveDir * dif / 24, e.X, e.Y);
-                    else
-                        SelectedSection[SelectedIndex].position += MoveDir * dif / 24;
-                }
-                glControl1.Invalidate();
+                this.prevMouseX = e.X;
+                this.prevMouseY = num;
             }
-            if (e.Button != MouseButtons.Left)
-            {
-                if (UndoBool3 == true)
-                {
-                    UndoBool2 = false;
-                    UndoBool3 = false;
-                }
-            }
-            else
-            {
-                if (MouseAxis != 0)
-                {
-                    MouseAxis = 0;
-                    if (SelectedIndex > 0 && SelectedSection[SelectedIndex].RequiresCustomRendering) SelectedSection[SelectedIndex].StopDragging();
-                }
-            }
-
-            prevMouseX = e.X;
-            prevMouseY = newY;
         }
-
-        private void glControl1_MouseWheel(object sender, MouseEventArgs e)
+            private void glControl1_MouseWheel(object sender, MouseEventArgs e)
         {
             // Move the camera towards where it's facing
             camera.cameraPosition += camera.cameraFront * e.Delta;
@@ -606,42 +661,45 @@ namespace RedCarpet
         }
         #endregion
 
-        void selectObject(int Objindex)
+        private void selectObject(int Objindex)
         {
-            Undo = "selectObject";
-            UndoInt = SelectedIndex;
-            SelectedIndex = Objindex;
-            glControl1.Invalidate();
+            this.PassUndoBackward();
+            this.Undo = "selectObject";
+            this.UndoInt = this.SelectedIndex;
+            this.SelectedIndex = Objindex;
+            this.glControl1.Invalidate();
         }
 
         private void objectsList_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (StopUndo == false)
+            if (this.StopUndo)
             {
-                if (UndoBool == false)
+                if (this.StopUndo)
                 {
-                    UndoBool = true;
-                    UndoInt2 = objectsList.SelectedIndex;
+                    this.StopUndo = false;
                 }
-                if (UndoBool == true)
-                {
-                    if (UndoInt2 != objectsList.SelectedIndex)
-                    {
-                        Undo = "ObjectListSelectedIndex";
-                        UndoInt = UndoInt2;
-                        UndoInt2 = objectsList.SelectedIndex;
-                    }
-                }
-                propertyGrid1.SelectedObject = null;
-                if (SelectedIndex != -1)
-                    propertyGrid1.SelectedObject = SelectedSection[SelectedIndex];
-
-                SelectedIndex = objectsList.SelectedIndex;
-                glControl1.Invalidate();
             }
-            else if (StopUndo == true)
+            else
             {
-                StopUndo = false;
+                if (!this.UndoBool)
+                {
+                    this.UndoBool = true;
+                    this.UndoInt2 = this.objectsList.SelectedIndex;
+                }
+                if (this.UndoBool && (this.UndoInt2 != this.objectsList.SelectedIndex))
+                {
+                    this.PassUndoBackward();
+                    this.Undo = "ObjectListSelectedIndex";
+                    this.UndoInt = this.UndoInt2;
+                    this.UndoInt2 = this.objectsList.SelectedIndex;
+                }
+                this.propertyGrid1.SelectedObject = null;
+                if (this.SelectedIndex != -1)
+                {
+                    this.propertyGrid1.SelectedObject = this.SelectedSection[this.SelectedIndex];
+                }
+                this.SelectedIndex = this.objectsList.SelectedIndex;
+                this.glControl1.Invalidate();
             }
         }
 
@@ -803,14 +861,21 @@ namespace RedCarpet
 
         public void DeleteObject(string section, int index)
         {
-            StopUndo = true;
-            Undo = "ObjectDelete";
-            UndoString = section;
-            UndoMapObject = loadedMap.mobjs[section].ElementAt(index);
-            if (propertyGrid1.SelectedObject == loadedMap.mobjs[section][index]) propertyGrid1.SelectedObject = null;
-            loadedMap.mobjs[section].RemoveAt(index);
-            if (SelectedSection == loadedMap.mobjs[section]) objectsList.Items.RemoveAt(index);
-            glControl1.Invalidate();
+            this.StopUndo = true;
+            this.PassUndoBackward();
+            this.Undo = "ObjectDelete";
+            this.UndoString = section;
+            this.UndoMapObject = Enumerable.ElementAt<RedCarpet.Object.MapObject>(this.loadedMap.mobjs[section], index);
+            if (this.propertyGrid1.SelectedObject == this.loadedMap.mobjs[section][index])
+            {
+                this.propertyGrid1.SelectedObject = null;
+            }
+            this.loadedMap.mobjs[section].RemoveAt(index);
+            if (this.SelectedSection == this.loadedMap.mobjs[section])
+            {
+                this.objectsList.Items.RemoveAt(index);
+            }
+            this.glControl1.Invalidate();
         }
 
         private void actorToolStripMenuItem_Click(object sender, EventArgs e)
@@ -879,36 +944,151 @@ namespace RedCarpet
         }
         private void undoToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (Undo == "selectObject")
+            if (this.Undo == "selectObject")
             {
-                SelectedIndex = UndoInt;// this was a peace of cake
-                glControl1.Invalidate();
+                this.SelectedIndex = this.UndoInt;
+                this.glControl1.Invalidate();
+                this.PassUndoForward();
             }
-            if (Undo == "propertyValueChanged")
+            if (this.Undo == "propertyValueChanged")
             {
-                PropertyInfo pi = propertyGrid1.SelectedObject.GetType().GetProperty(UndoSharePropertyName);
-                pi.SetValue(propertyGrid1.SelectedObject, UndoObject, null); //I Spent about an two days for finding a way to do this lol
+                this.propertyGrid1.SelectedObject.GetType().GetProperty(this.UndoSharePropertyName).SetValue(this.propertyGrid1.SelectedObject, this.UndoObject, null);
+                this.propertyGrid1.Refresh();
+                this.Undo = null;
+                this.PassUndoForward();
+            }
+            if (this.Undo == "ObjectListSelectedIndex")
+            {
+                this.objectsList.SelectedIndex = this.UndoInt;
+                this.Undo = null;
+                this.PassUndoForward();
+            }
+            if (this.Undo == "ObjectMoveGl")
+            {
+                this.SelectedSection[this.UndoInt].position = this.UndoVector;
+                this.glControl1.Refresh();
+                this.Undo = null;
+                this.PassUndoForward();
+            }
+            if (this.Undo == "ObjectDelete")
+            {
+                this.AddObject(this.UndoMapObject, this.UndoString);
+                this.glControl1.Invalidate();
+                this.Undo = null;
+                this.PassUndoForward();
+            }
+        }
+        private void PassUndoBackward()
+        {
+            this.StopUndo3 = this.StopUndo2;
+            this.StopRedo3 = this.StopRedo2;
+            this.UndoInt31 = this.UndoInt21;
+            this.RedoInt31 = this.RedoInt21;
+            this.Undo3 = this.Undo2;
+            this.Redo3 = this.Redo2;
+            this.UndoShareItem3 = this.UndoShareItem2;
+            this.UndoSharePropertyName3 = this.UndoSharePropertyName2;
+            this.RedoShareItem3 = this.RedoShareItem2;
+            this.RedoSharePropertyName3 = this.RedoSharePropertyName2;
+            this.UndoObject3 = this.UndoObject2;
+            this.RedoObject3 = this.RedoObject2;
+            this.UndoInt32 = this.UndoInt22;
+            this.RedoInt32 = this.RedoInt22;
+            this.UndoBool31 = this.UndoBool21;
+            this.RedoBool31 = this.RedoBool21;
+            this.UndoVector3 = this.UndoVector2;
+            this.RedoVector3 = this.RedoVector2;
+            this.UndoBool32 = this.UndoBool22;
+            this.RedoBool32 = this.RedoBool22;
+            this.UndoBool33 = this.UndoBool23;
+            this.RedoBool33 = this.RedoBool23;
+            this.UndoMapObject3 = this.UndoMapObject2;
+            this.RedoMapObject3 = this.RedoMapObject2;
+            this.UndoString3 = this.UndoString2;
+            this.RedoString3 = this.RedoString2;
+            this.StopUndo2 = this.StopUndo;
+            this.StopRedo2 = this.StopRedo;
+            this.UndoInt21 = this.UndoInt;
+            this.RedoInt21 = this.RedoInt;
+            this.Undo2 = this.Undo;
+            this.Redo2 = this.Redo;
+            this.UndoShareItem2 = this.UndoShareItem;
+            this.UndoSharePropertyName2 = this.UndoSharePropertyName;
+            this.RedoShareItem2 = this.RedoShareItem;
+            this.RedoSharePropertyName2 = this.RedoSharePropertyName;
+            this.UndoObject2 = this.UndoObject;
+            this.RedoObject2 = this.RedoObject;
+            this.UndoInt22 = this.UndoInt2;
+            this.RedoInt22 = this.RedoInt2;
+            this.UndoBool21 = this.UndoBool;
+            this.RedoBool21 = this.RedoBool;
+            this.UndoVector2 = this.UndoVector;
+            this.RedoVector2 = this.RedoVector;
+            this.UndoBool22 = this.UndoBool;
+            this.RedoBool22 = this.RedoBool;
+            this.UndoBool23 = this.UndoBool;
+            this.RedoBool23 = this.RedoBool;
+            this.UndoMapObject2 = this.UndoMapObject;
+            this.RedoMapObject2 = this.RedoMapObject;
+            this.UndoString2 = this.UndoString;
+            this.RedoString2 = this.RedoString;
+        }
 
-                propertyGrid1.Refresh();
-                Undo = null;
-            }
-            if (Undo == "ObjectListSelectedIndex")
-            {
-                objectsList.SelectedIndex = UndoInt; //Also a piece of cake
-                Undo = null;
-            }
-            if (Undo == "ObjectMoveGl")
-            {
-                SelectedSection[UndoInt].position = UndoVector; // a little overcomplicated
-                glControl1.Refresh();
-                Undo = null;
-            }
-            if (Undo == "ObjectDelete")
-            {
-                AddObject(UndoMapObject, UndoString);
-                glControl1.Invalidate();
-                Undo = null;
-            }
+        private void PassUndoForward()
+        {
+            this.StopUndo = this.StopUndo2;
+            this.StopRedo = this.StopRedo2;
+            this.UndoInt = this.UndoInt21;
+            this.RedoInt = this.RedoInt21;
+            this.Undo = this.Undo2;
+            this.Redo = this.Redo2;
+            this.UndoShareItem = this.UndoShareItem2;
+            this.UndoSharePropertyName = this.UndoSharePropertyName2;
+            this.RedoShareItem = this.RedoShareItem2;
+            this.RedoSharePropertyName = this.RedoSharePropertyName2;
+            this.UndoObject = this.UndoObject2;
+            this.RedoObject = this.RedoObject2;
+            this.UndoInt2 = this.UndoInt22;
+            this.RedoInt2 = this.RedoInt22;
+            this.UndoBool = this.UndoBool21;
+            this.RedoBool = this.RedoBool21;
+            this.UndoVector = this.UndoVector2;
+            this.RedoVector = this.RedoVector2;
+            this.UndoBool2 = this.UndoBool22;
+            this.RedoBool2 = this.RedoBool22;
+            this.UndoBool3 = this.UndoBool23;
+            this.RedoBool3 = this.RedoBool23;
+            this.UndoMapObject = this.UndoMapObject2;
+            this.RedoMapObject = this.RedoMapObject2;
+            this.UndoString = this.UndoString2;
+            this.RedoString = this.RedoString2;
+            this.StopUndo2 = this.StopUndo3;
+            this.StopRedo2 = this.StopRedo3;
+            this.UndoInt21 = this.UndoInt31;
+            this.RedoInt21 = this.RedoInt31;
+            this.Undo2 = this.Undo3;
+            this.Redo2 = this.Redo3;
+            this.UndoShareItem2 = this.UndoShareItem3;
+            this.UndoSharePropertyName2 = this.UndoSharePropertyName3;
+            this.RedoShareItem2 = this.RedoShareItem3;
+            this.RedoSharePropertyName2 = this.RedoSharePropertyName3;
+            this.UndoObject2 = this.UndoObject3;
+            this.RedoObject2 = this.RedoObject3;
+            this.UndoInt22 = this.UndoInt32;
+            this.RedoInt22 = this.RedoInt32;
+            this.UndoBool21 = this.UndoBool31;
+            this.RedoBool21 = this.RedoBool31;
+            this.UndoVector2 = this.UndoVector3;
+            this.RedoVector2 = this.RedoVector3;
+            this.UndoBool22 = this.UndoBool32;
+            this.RedoBool22 = this.RedoBool32;
+            this.UndoBool23 = this.UndoBool33;
+            this.RedoBool23 = this.RedoBool33;
+            this.UndoMapObject2 = this.UndoMapObject3;
+            this.RedoMapObject2 = this.RedoMapObject3;
+            this.UndoString2 = this.UndoString3;
+            this.RedoString2 = this.RedoString3;
+
         }
 
         private void Form1_KeyDown(object sender, KeyEventArgs e)
@@ -918,11 +1098,6 @@ namespace RedCarpet
                 undoToolStripMenuItem.PerformClick(); //For an unkonw reason this only fires if the z button is pressed
                                                       //after the control (ctrl) button.tried writing it backward but no luck.
             }
-        }
-
-        private void debugTestToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            debugTestToolStripMenuItem.Text = Undo;
         }
 
         private void testCreateActorToolStripMenuItem_Click(object sender, EventArgs e)
@@ -995,6 +1170,12 @@ namespace RedCarpet
             settings.IncludePublicKeyTokenInTypeName = false;
             var serializer = new SharpSerializer(settings);
             serializer.Serialize(QWE, "Test.Xml");
+        }
+
+        private void objectFileManagerToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Form2 form2 = new Form2();
+            form2.ShowDialog();
         }
     }
 }
