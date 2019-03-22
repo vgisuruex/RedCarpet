@@ -16,6 +16,7 @@ namespace RedCarpet
     {
         public Dictionary<string, List<MapObject>> mobjs = new Dictionary<string, List<MapObject>>();
 
+        [Serializable]
         public class MapObject : ICloneable
         {
             static void Vector3ToValues(Vector3 vec, dynamic obj)

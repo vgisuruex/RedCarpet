@@ -68,6 +68,7 @@
             this.Controls.Add(this.treeView1);
             this.Name = "ByamlViewer";
             this.Text = "ByamlViewer";
+            this.Load += new System.EventHandler(this.ByamlViewer_Load);
             this.contextMenuStrip1.ResumeLayout(false);
             this.ResumeLayout(false);
 

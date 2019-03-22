@@ -96,5 +96,10 @@ namespace RedCarpet
         {
             Clipboard.SetText(treeView1.SelectedNode.Text);
         }
+
+        private void ByamlViewer_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }

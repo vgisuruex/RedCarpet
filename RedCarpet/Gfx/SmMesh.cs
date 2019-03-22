@@ -1,7 +1,10 @@
 ﻿using OpenTK.Graphics.OpenGL4;
 using Syroot.NintenTools.Bfres;
 using System;
+using System.Drawing;
+using System.Drawing.Imaging;
 using System.Linq;
+using PixelFormat = System.Drawing.Imaging.PixelFormat;
 
 namespace RedCarpet.Gfx
 {

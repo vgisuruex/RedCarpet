@@ -5,6 +5,7 @@ using System.Collections.Generic;
 
 namespace RedCarpet.Gfx
 {
+    [Serializable]
     public class SmBoundingBox : IDisposable
     {
         // Min/Max

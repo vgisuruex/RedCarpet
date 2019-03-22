@@ -8,6 +8,7 @@ using System.IO;
 using OpenTK;
 using System.Reflection;
 using Syroot.NintenTools.Bfres.Helpers;
+using System.Drawing;
 
 namespace RedCarpet.Gfx
 {
@@ -68,7 +69,14 @@ namespace RedCarpet.Gfx
                 // Create Vector3s for BBox calculation
                 for (int i = 0; i < verticesArray.Length; i += 3)
                 {
-                    positionVectors.Add(new Vector3(verticesArray[i], verticesArray[i + 1], verticesArray[i + 2]));
+                    if (model.Name != "PipePackunDenStepA")
+                    {
+                        positionVectors.Add(new Vector3(verticesArray[i], verticesArray[i + 1], verticesArray[i + 2]));
+                    }
+                    else
+                    {
+                        positionVectors.Add(new Vector3(verticesArray[i], verticesArray[i], verticesArray[i]));
+                    }
                 }
 
                 // Generate the VBO for this Shape

@@ -15,8 +15,9 @@ using static RedCarpet.Object;
 using Syroot.NintenTools.Bfres;
 using Polenter.Serialization;
 using System.Xml.Linq;
-using System.Reflection;
 using System.Diagnostics;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Runtime.Serialization;
 
 /* -- RedCarpet --
  * MasterF0x
@@ -24,6 +25,7 @@ using System.Diagnostics;
  * Ray Koopa
  * Exelix :D
  * Simon
+ * VgIsuruEx :D
  */
 
 namespace RedCarpet
@@ -44,7 +46,7 @@ namespace RedCarpet
             }
         }
 
-        private List<MapObject> SelectedSection
+        public List<MapObject> SelectedSection
         {
             get { return loadedMap.mobjs[SectionSelect.Text]; }
         }
@@ -55,11 +57,13 @@ namespace RedCarpet
             set { objectsList.SelectedIndex = value; }
         }
 
-        private string SelectedSectionName
+        public string SelectedSectionName
         {
             get { return SectionSelect.Text; }
         }
 
+        bool SceneLoaded;
+        int MouseScrollSpeed = 1;
         private Vector3 MoveDir;
         private int MouseAxis;
         private Point MouseStart;
@@ -68,7 +72,7 @@ namespace RedCarpet
         private int prevMouseX;
         private int prevMouseY;
 
-        private Object loadedMap = null; //Load every section of the byml in dictionary
+        public Object loadedMap = null; //Load every section of the byml in dictionary
 
         private static Vector4 blackColor = new Vector4(0.0f, 0.0f, 0.0f, 0.0f);
         private static Vector4 whiteColor = new Vector4(1.0f, 1.0f, 1.0f, 1.0f);
@@ -173,6 +177,7 @@ namespace RedCarpet
 
         public void DisposeCurrentLevel()
         {
+            SceneLoaded = false;
             SectionSelect.Items.Clear();
             btn_openBymlView.Enabled = false;
             loadedSarcFileName = "";
@@ -254,6 +259,7 @@ namespace RedCarpet
             else SectionSelect.SelectedIndex = 0;
 
             cpath.Text = LoadedByml["FilePath"];
+            SceneLoaded = true;
         }
 
         private void LoadObjectsSection(string section)
@@ -262,9 +268,17 @@ namespace RedCarpet
             for (int i = 0; i < objs.Count; i++)
             {
                 MapObject Tmp_mpobj = new Object.MapObject(objs[i]);
-                int ID = int.Parse(Tmp_mpobj.objectID.Remove(0, 3));
-                if (ID > LevelHighestId) LevelHighestId = ID;
-
+                if (Tmp_mpobj.ToString() != "Rail")
+                {
+                    int ID = int.Parse(Tmp_mpobj.objectID.Remove(0, 3));
+                    Debug.WriteLine(ID);
+                    if (ID > LevelHighestId) LevelHighestId = ID;
+                }
+                else
+                {
+                    int ID = 3;  
+                    Debug.WriteLine(ID);
+                }
                 LoadModelToObj(Tmp_mpobj);
 
                 loadedMap.mobjs[section].Add(Tmp_mpobj);
@@ -634,7 +648,7 @@ namespace RedCarpet
             private void glControl1_MouseWheel(object sender, MouseEventArgs e)
         {
             // Move the camera towards where it's facing
-            camera.cameraPosition += camera.cameraFront * e.Delta;
+            camera.cameraPosition += camera.cameraFront * e.Delta*MouseScrollSpeed;
 
             glControl1.Invalidate();
         }
@@ -875,6 +889,10 @@ namespace RedCarpet
             {
                 this.objectsList.Items.RemoveAt(index);
             }
+            if (objectsList.Items.Count != 0)
+            {
+                objectsList.SelectedIndex = 0;
+            }
             this.glControl1.Invalidate();
         }
 
@@ -885,6 +903,14 @@ namespace RedCarpet
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            if (Directory.Exists("FilesToExport"))
+            {
+                Directory.Delete("FilesToExport", true);
+            }
+            if (Directory.Exists("FilesInView"))
+            {
+                Directory.Delete("FilesInView", true);
+            }
             this.KeyPreview = true;
         }
         private static Dictionary<string, object> GetXmlData(XElement xml)
@@ -1100,12 +1126,6 @@ namespace RedCarpet
             }
         }
 
-        private void testCreateActorToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            AddObject AddObject = new AddObject();
-            AddObject.Show();
-        }
-
         private void Undobut_Click(object sender, EventArgs e)
         {
             undoToolStripMenuItem.PerformClick();
@@ -1175,7 +1195,140 @@ namespace RedCarpet
         private void objectFileManagerToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Form2 form2 = new Form2();
-            form2.ShowDialog();
+            if (SceneLoaded == true)
+            {
+                form2.ObjectReadyToSave = true;
+                form2.listBox2.Items.AddRange(objectsList.Items);
+                form2.ObjectsInScene = SelectedSection;
+                form2.ObjectList = objectsList;
+                form2.Item = (MapObject)SelectedSection[0];
+                form2.SelectedSectionName = SelectedSectionName;
+                form2.testobject = (MapObject)SelectedSection[0];
+            }
+            form2.ShowDialog(this);
+        }
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (comboBox1.SelectedIndex == 0)
+            {
+                MouseScrollSpeed = 1;
+            }
+            else if (comboBox1.SelectedIndex == 1)
+            {
+                MouseScrollSpeed = 2;
+            }
+            else if (comboBox1.SelectedIndex == 2)
+            {
+                MouseScrollSpeed = 3;
+            }
+            else if (comboBox1.SelectedIndex == 3)
+            {
+                MouseScrollSpeed = 4;
+            }
+            else if (comboBox1.SelectedIndex == 4)
+            {
+                MouseScrollSpeed = 5;
+            }
+            else if (comboBox1.SelectedIndex == 5)
+            {
+                MouseScrollSpeed = 10;
+            }
+            else if (comboBox1.SelectedIndex == 6)
+            {
+                MouseScrollSpeed = 25;
+            }
+            else if (comboBox1.SelectedIndex == 7)
+            {
+                MouseScrollSpeed = 50;
+            }
+            else if (comboBox1.SelectedIndex == 8)
+            {
+                MouseScrollSpeed = 75;
+            }
+            else if (comboBox1.SelectedIndex == 9)
+            {
+                MouseScrollSpeed = 100;
+            }
+            else if (comboBox1.SelectedIndex == 10)
+            {
+                MouseScrollSpeed = 200;
+            }
+            else if (comboBox1.SelectedIndex == 11)
+            {
+                MouseScrollSpeed = 300;
+            }
+            else if (comboBox1.SelectedIndex == 12)
+            {
+                MouseScrollSpeed = 500;
+            }
+            else if (comboBox1.SelectedIndex == 13)
+            {
+                MouseScrollSpeed = 1000;
+            }
+            else if (comboBox1.SelectedIndex == 14)
+            {
+                MouseScrollSpeed = 5000;
+            }
+            else if (comboBox1.SelectedIndex == 15)
+            {
+                MouseScrollSpeed = 10000;
+            }
+        }
+
+        private void objectsList_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Delete)
+            {
+                if (SelectedIndex != -1)
+                {
+                    DeleteObject(SelectedSectionName, SelectedIndex);
+                }
+            }
+        }
+
+        private void propertyGrid1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (Directory.Exists("FilesToExport"))
+            {
+                Directory.Delete("FilesToExport", true);
+            }
+            if (Directory.Exists("FilesInView"))
+            {
+                Directory.Delete("FilesInView", true);
+            }
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            MemoryStream stream = new MemoryStream();
+            stream.Position = 0;
+            IFormatter formatter = new BinaryFormatter();
+            stream.Position = 0;
+            formatter.Serialize(stream, SelectedSection[SelectedIndex]);
+            using (FileStream file = new FileStream("file.bin", FileMode.Create, System.IO.FileAccess.Write))
+                stream.CopyTo(file);
+
+
+
+            MemoryStream ms = new MemoryStream();
+            using (FileStream file = new FileStream("file.bin", FileMode.Open, FileAccess.Read))
+                file.CopyTo(ms);
+            AddObject((MapObject)formatter.Deserialize(ms), SelectedSectionName);
+        }
+
+        private void EditLinks_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void objectFilesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

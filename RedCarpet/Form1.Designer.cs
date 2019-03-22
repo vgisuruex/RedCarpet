@@ -40,19 +40,18 @@
             this.changeGameFolderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.createToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.actorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.testCreateActorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.actionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.undoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.redoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.objectFilesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.objectFileManagerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.SectionSelect = new System.Windows.Forms.ComboBox();
             this.objectsList = new System.Windows.Forms.ListBox();
-            this.textBox4 = new System.Windows.Forms.TextBox();
-            this.textBox3 = new System.Windows.Forms.TextBox();
-            this.textBox2 = new System.Windows.Forms.TextBox();
             this.cpath = new System.Windows.Forms.TextBox();
             this.propertyGrid1 = new System.Windows.Forms.PropertyGrid();
             this.label1 = new System.Windows.Forms.Label();
+            this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.glControl1 = new OpenTK.GLControl();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.directorySearcher1 = new System.DirectoryServices.DirectorySearcher();
@@ -73,8 +72,8 @@
             this.Prev = new System.Windows.Forms.Button();
             this.ToolContainer = new System.Windows.Forms.GroupBox();
             this.textBox1 = new System.Windows.Forms.TextBox();
-            this.objectFilesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.objectFileManagerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.label2 = new System.Windows.Forms.Label();
+            this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -170,8 +169,7 @@
             // createToolStripMenuItem
             // 
             this.createToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.actorToolStripMenuItem,
-            this.testCreateActorToolStripMenuItem});
+            this.actorToolStripMenuItem});
             this.createToolStripMenuItem.Name = "createToolStripMenuItem";
             this.createToolStripMenuItem.Size = new System.Drawing.Size(53, 20);
             this.createToolStripMenuItem.Text = "Create";
@@ -179,16 +177,9 @@
             // actorToolStripMenuItem
             // 
             this.actorToolStripMenuItem.Name = "actorToolStripMenuItem";
-            this.actorToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
+            this.actorToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
             this.actorToolStripMenuItem.Text = "Actor";
             this.actorToolStripMenuItem.Click += new System.EventHandler(this.actorToolStripMenuItem_Click);
-            // 
-            // testCreateActorToolStripMenuItem
-            // 
-            this.testCreateActorToolStripMenuItem.Name = "testCreateActorToolStripMenuItem";
-            this.testCreateActorToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
-            this.testCreateActorToolStripMenuItem.Text = "TestCreateActor";
-            this.testCreateActorToolStripMenuItem.Click += new System.EventHandler(this.testCreateActorToolStripMenuItem_Click);
             // 
             // actionsToolStripMenuItem
             // 
@@ -202,15 +193,31 @@
             // undoToolStripMenuItem
             // 
             this.undoToolStripMenuItem.Name = "undoToolStripMenuItem";
-            this.undoToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.undoToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
             this.undoToolStripMenuItem.Text = "Undo";
             this.undoToolStripMenuItem.Click += new System.EventHandler(this.undoToolStripMenuItem_Click);
             // 
             // redoToolStripMenuItem
             // 
             this.redoToolStripMenuItem.Name = "redoToolStripMenuItem";
-            this.redoToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.redoToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
             this.redoToolStripMenuItem.Text = "Redo";
+            // 
+            // objectFilesToolStripMenuItem
+            // 
+            this.objectFilesToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.objectFileManagerToolStripMenuItem});
+            this.objectFilesToolStripMenuItem.Name = "objectFilesToolStripMenuItem";
+            this.objectFilesToolStripMenuItem.Size = new System.Drawing.Size(80, 20);
+            this.objectFilesToolStripMenuItem.Text = "Object Files";
+            this.objectFilesToolStripMenuItem.Click += new System.EventHandler(this.objectFilesToolStripMenuItem_Click);
+            // 
+            // objectFileManagerToolStripMenuItem
+            // 
+            this.objectFileManagerToolStripMenuItem.Name = "objectFileManagerToolStripMenuItem";
+            this.objectFileManagerToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.objectFileManagerToolStripMenuItem.Text = "Object File Manager";
+            this.objectFileManagerToolStripMenuItem.Click += new System.EventHandler(this.objectFileManagerToolStripMenuItem_Click);
             // 
             // splitContainer1
             // 
@@ -230,9 +237,6 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.BackColor = System.Drawing.SystemColors.Control;
-            this.splitContainer1.Panel2.Controls.Add(this.textBox4);
-            this.splitContainer1.Panel2.Controls.Add(this.textBox3);
-            this.splitContainer1.Panel2.Controls.Add(this.textBox2);
             this.splitContainer1.Panel2.Controls.Add(this.cpath);
             this.splitContainer1.Panel2.Controls.Add(this.propertyGrid1);
             this.splitContainer1.Panel2.Controls.Add(this.label1);
@@ -264,27 +268,7 @@
             this.objectsList.TabIndex = 11;
             this.objectsList.SelectedIndexChanged += new System.EventHandler(this.objectsList_SelectedIndexChanged);
             this.objectsList.DoubleClick += new System.EventHandler(this.objectsList_doubleClick);
-            // 
-            // textBox4
-            // 
-            this.textBox4.Location = new System.Drawing.Point(9, 417);
-            this.textBox4.Name = "textBox4";
-            this.textBox4.Size = new System.Drawing.Size(100, 20);
-            this.textBox4.TabIndex = 15;
-            // 
-            // textBox3
-            // 
-            this.textBox3.Location = new System.Drawing.Point(9, 399);
-            this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(100, 20);
-            this.textBox3.TabIndex = 14;
-            // 
-            // textBox2
-            // 
-            this.textBox2.Location = new System.Drawing.Point(4, 376);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(100, 20);
-            this.textBox2.TabIndex = 13;
+            this.objectsList.KeyDown += new System.Windows.Forms.KeyEventHandler(this.objectsList_KeyDown);
             // 
             // cpath
             // 
@@ -307,6 +291,7 @@
             this.propertyGrid1.Size = new System.Drawing.Size(139, 388);
             this.propertyGrid1.TabIndex = 12;
             this.propertyGrid1.PropertyValueChanged += new System.Windows.Forms.PropertyValueChangedEventHandler(this.propertyValueChanged);
+            this.propertyGrid1.Click += new System.EventHandler(this.propertyGrid1_Click);
             // 
             // label1
             // 
@@ -316,6 +301,35 @@
             this.label1.Size = new System.Drawing.Size(69, 13);
             this.label1.TabIndex = 2;
             this.label1.Text = "Compile Path";
+            // 
+            // comboBox1
+            // 
+            this.comboBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.comboBox1.FormattingEnabled = true;
+            this.comboBox1.Items.AddRange(new object[] {
+            "1 (Normal)",
+            "2 (Double)",
+            "3 (Triple)",
+            "4 (Quadruple)",
+            "5 (Fiveduple)",
+            "10 (Double-Fiveduple)",
+            "25 (Fiveduple-Fiveduple)",
+            "50 (Fiveduple-Tenduple)",
+            "75 (Triple-Fiveduple-Fiveduple)",
+            "100 (Hundruple)",
+            "200 (Double-Hundruple)",
+            "300 (Triple-Hundruple)",
+            "500 (Fivedruple-Hundruple)",
+            "1000 (Thousandruple)",
+            "5000 (FiveThousandDruple)",
+            "10000 (Ten-Thousandruple)"});
+            this.comboBox1.Location = new System.Drawing.Point(784, 2);
+            this.comboBox1.Name = "comboBox1";
+            this.comboBox1.Size = new System.Drawing.Size(242, 21);
+            this.comboBox1.TabIndex = 13;
+            this.comboBox1.Text = "1 (Normal)";
+            this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
             // 
             // glControl1
             // 
@@ -450,6 +464,7 @@
             this.EditLinks.TabIndex = 13;
             this.EditLinks.Text = "Edit links (TODO)";
             this.EditLinks.UseVisualStyleBackColor = true;
+            this.EditLinks.Click += new System.EventHandler(this.EditLinks_Click);
             // 
             // Undobut
             // 
@@ -541,32 +556,31 @@
             this.textBox1.Size = new System.Drawing.Size(118, 20);
             this.textBox1.TabIndex = 21;
             // 
-            // objectFilesToolStripMenuItem
+            // label2
             // 
-            this.objectFilesToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.objectFileManagerToolStripMenuItem});
-            this.objectFilesToolStripMenuItem.Name = "objectFilesToolStripMenuItem";
-            this.objectFilesToolStripMenuItem.Size = new System.Drawing.Size(80, 20);
-            this.objectFilesToolStripMenuItem.Text = "Object Files";
-            // 
-            // objectFileManagerToolStripMenuItem
-            // 
-            this.objectFileManagerToolStripMenuItem.Name = "objectFileManagerToolStripMenuItem";
-            this.objectFileManagerToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.objectFileManagerToolStripMenuItem.Text = "Object File Manager";
-            this.objectFileManagerToolStripMenuItem.Click += new System.EventHandler(this.objectFileManagerToolStripMenuItem_Click);
+            this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(667, 6);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(111, 13);
+            this.label2.TabIndex = 16;
+            this.label2.Text = "Mouse Scroll Speed ::";
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1032, 482);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.comboBox1);
             this.Controls.Add(this.ToolContainer);
             this.Controls.Add(this.splitContainer2);
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "Form1";
             this.Text = "RedCarpet";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.Load += new System.EventHandler(this.Form1_Load);
             this.Shown += new System.EventHandler(this.Form1_shown);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Form1_KeyDown);
@@ -604,12 +618,10 @@
         private System.Windows.Forms.ToolStripMenuItem actionsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem undoToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem redoToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem testCreateActorToolStripMenuItem;
         private System.Windows.Forms.SplitContainer splitContainer1;
-        private System.Windows.Forms.ComboBox SectionSelect;
-        private System.Windows.Forms.ListBox objectsList;
+        public System.Windows.Forms.ComboBox SectionSelect;
+        public System.Windows.Forms.ListBox objectsList;
         private System.Windows.Forms.TextBox cpath;
-        private System.Windows.Forms.PropertyGrid propertyGrid1;
         private System.Windows.Forms.Label label1;
         public OpenTK.GLControl glControl1;
         private System.Windows.Forms.SplitContainer splitContainer2;
@@ -631,11 +643,12 @@
         private System.Windows.Forms.Button Prev;
         private System.Windows.Forms.GroupBox ToolContainer;
         private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.TextBox textBox4;
-        private System.Windows.Forms.TextBox textBox3;
-        private System.Windows.Forms.TextBox textBox2;
         private System.Windows.Forms.ToolStripMenuItem objectFilesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem objectFileManagerToolStripMenuItem;
+        private System.Windows.Forms.PropertyGrid propertyGrid1;
+        private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.Label label2;
+        private System.ComponentModel.BackgroundWorker backgroundWorker1;
     }
 }
 
