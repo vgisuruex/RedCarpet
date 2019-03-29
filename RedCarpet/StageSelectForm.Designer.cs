@@ -30,6 +30,8 @@
         {
             this.StageSelectListBox = new System.Windows.Forms.ListBox();
             this.TextSearch = new System.Windows.Forms.TextBox();
+            this.listBox1 = new System.Windows.Forms.ListBox();
+            this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.SuspendLayout();
             // 
             // StageSelectListBox
@@ -51,17 +53,59 @@
             this.TextSearch.Click += new System.EventHandler(this.TextSearch_click);
             this.TextSearch.TextChanged += new System.EventHandler(this.TextSearch_TextChanged);
             // 
+            // listBox1
+            // 
+            this.listBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.listBox1.ForeColor = System.Drawing.Color.Black;
+            this.listBox1.FormattingEnabled = true;
+            this.listBox1.HorizontalExtent = 1000;
+            this.listBox1.HorizontalScrollbar = true;
+            this.listBox1.Location = new System.Drawing.Point(300, 56);
+            this.listBox1.Name = "listBox1";
+            this.listBox1.Size = new System.Drawing.Size(450, 407);
+            this.listBox1.TabIndex = 2;
+            this.listBox1.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.listBox1_MouseDoubleClick);
+            // 
+            // comboBox1
+            // 
+            this.comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.comboBox1.FormattingEnabled = true;
+            this.comboBox1.Items.AddRange(new object[] {
+            "WORLD MAP",
+            "WORLD - 1",
+            "WORLD - 2 ",
+            "WORLD - 3",
+            "WORLD - 4",
+            "WORLD - 5",
+            "WORLD - 6",
+            "WORLD - \'",
+            "WORLD - :",
+            "WORLD - \"",
+            "WORLD - $",
+            "WORLD - %",
+            "WORLD - &",
+            "MISCELLANEOUS"});
+            this.comboBox1.Location = new System.Drawing.Point(300, 12);
+            this.comboBox1.Name = "comboBox1";
+            this.comboBox1.Size = new System.Drawing.Size(450, 26);
+            this.comboBox1.TabIndex = 3;
+            this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
+            // 
             // StageSelectForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(306, 478);
+            this.ClientSize = new System.Drawing.Size(762, 478);
+            this.Controls.Add(this.comboBox1);
+            this.Controls.Add(this.listBox1);
             this.Controls.Add(this.TextSearch);
             this.Controls.Add(this.StageSelectListBox);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.Name = "StageSelectForm";
             this.Text = "Stage Select";
+            this.Load += new System.EventHandler(this.StageSelectForm_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -71,5 +115,7 @@
 
         private System.Windows.Forms.ListBox StageSelectListBox;
         private System.Windows.Forms.TextBox TextSearch;
+        private System.Windows.Forms.ListBox listBox1;
+        private System.Windows.Forms.ComboBox comboBox1;
     }
 }

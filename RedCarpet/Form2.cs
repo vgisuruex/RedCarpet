@@ -341,7 +341,7 @@ namespace RedCarpet
                         pictureBox2.Image = (Bitmap)bmp.Clone();
                     }
                 }
-                richTextBox2.Text = File.ReadAllText("FilesInView/Details.txt");
+                if (File.Exists("FilesInView/Details.txt")) richTextBox2.Text = File.ReadAllText("FilesInView/Details.txt");
                 DirectoryInfo d = new DirectoryInfo("FilesInView");
                 FileInfo[] Files = d.GetFiles("*.Itm");
                 string str = "";
@@ -664,7 +664,7 @@ namespace RedCarpet
                         pictureBox2.Image = (Bitmap)bmp.Clone();
                     }
                 }
-                richTextBox2.Text = File.ReadAllText("FilesInView/Details.txt");
+                if(File.Exists("FilesInView/Details.txt")) richTextBox2.Text = File.ReadAllText("FilesInView/Details.txt");
                 DirectoryInfo d = new DirectoryInfo("FilesInView");
                 FileInfo[] Files = d.GetFiles("*.Itm");
                 string str = "";

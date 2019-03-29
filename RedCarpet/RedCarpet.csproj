@@ -264,6 +264,7 @@
     <Compile Include="Gfx\SmMesh.cs" />
     <Compile Include="Gfx\SmModel.cs" />
     <Compile Include="Gfx\SmShaderProgram.cs" />
+    <Compile Include="LevelDatabase.cs" />
     <Compile Include="Object.cs" />
     <Compile Include="ObjectSerializer.cs" />
     <Compile Include="Program.cs" />
